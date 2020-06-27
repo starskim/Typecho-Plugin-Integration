@@ -20,19 +20,14 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
  */
 class Textarea_integration extends Typecho_Widget_Helper_Form_Element
 {
-    public function start(){}
-
-    public function end(){ echo '</ul></div></div></div>';}
-
-
     public function __construct($name = NULL, array $options = NULL, $value = NULL, $label = NULL, $description = NULL)
     {
         /** 创建html元素,并设置class */
         //parent::__construct('ul', array('class' => 'typecho-option', 'id' => 'typecho-option-item-' . $name . '-' . self::$uniqueId));
-        $this->addItem(new Integration('<div class="mdui-panel" mdui-panel=""><div class="mdui-panel-item"><div class="mdui-panel-item-header">'.$label. '</div><div class="mdui-panel-item-body"><ul style="padding-left: 0px; list-style: none!important" id="typecho-option-item-'.$name.'-'.self::$uniqueId.'">'));
+        $this->addItem(new Integration('<div class="mdui-panel" mdui-panel=""><div class="mdui-panel-item"><div class="mdui-panel-item-header">' . $label . '</div><div class="mdui-panel-item-body"><ul style="padding-left: 0px; list-style: none!important" id="typecho-option-item-' . $name . '-' . self::$uniqueId . '">'));
 
         $this->name = $name;
-        self::$uniqueId ++;
+        self::$uniqueId++;
 
         /** 运行自定义初始函数 */
         $this->init();
@@ -56,8 +51,6 @@ class Textarea_integration extends Typecho_Widget_Helper_Form_Element
         }
     }
 
-
-
     /**
      * 初始化当前输入项
      *
@@ -69,13 +62,22 @@ class Textarea_integration extends Typecho_Widget_Helper_Form_Element
     public function input($name = NULL, array $options = NULL)
     {
         $this->addItem(new Integration('<div class="mdui-textfield">'));
-        $input = new Typecho_Widget_Helper_Layout('textarea', array('id' => $name . '-0-' . self::$uniqueId, 'name' => $name,'class'=>'mdui-textfield-input','rows'=>'4'));
+        $input = new Typecho_Widget_Helper_Layout('textarea', array('id' => $name . '-0-' . self::$uniqueId, 'name' => $name, 'class' => 'mdui-textfield-input', 'rows' => '4'));
         $this->addItem(new Integration("</div>"));
         //$this->label->setAttribute('for', $name . '-0-' . self::$uniqueId);
         $this->container($input->setClose(false));
         $this->inputs[] = $input;
 
         return $input;
+    }
+
+    public function start()
+    {
+    }
+
+    public function end()
+    {
+        echo '</ul></div></div></div>';
     }
 
     /**

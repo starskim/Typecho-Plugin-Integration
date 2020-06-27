@@ -22,19 +22,22 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 class Checkbox_integration extends Typecho_Widget_Helper_Form_Element
 {
 
-    public function start(){}
-
-    public function end(){echo '</ul></div></div></div>';}
-
+    /**
+     * 选择值
+     *
+     * @access private
+     * @var array
+     */
+    private $_options = array();
 
     public function __construct($name = NULL, array $options = NULL, $value = NULL, $label = NULL, $description = NULL)
     {
         /** 创建html元素,并设置class */
         //parent::__construct('ul', array('class' => 'typecho-option', 'id' => 'typecho-option-item-' . $name . '-' . self::$uniqueId));
-        $this->addItem(new Integration('<div class="mdui-panel" mdui-panel=""><div class="mdui-panel-item"><div class="mdui-panel-item-header">'.$label. '</div><div class="mdui-panel-item-body"><ul class="typecho-option" id="typecho-option-item-'.$name.'-'.self::$uniqueId.'">'));
+        $this->addItem(new Integration('<div class="mdui-panel" mdui-panel=""><div class="mdui-panel-item"><div class="mdui-panel-item-header">' . $label . '</div><div class="mdui-panel-item-body"><ul class="typecho-option" id="typecho-option-item-' . $name . '-' . self::$uniqueId . '">'));
 
         $this->name = $name;
-        self::$uniqueId ++;
+        self::$uniqueId++;
 
         /** 运行自定义初始函数 */
         $this->init();
@@ -57,14 +60,6 @@ class Checkbox_integration extends Typecho_Widget_Helper_Form_Element
             $this->description($description);
         }
     }
-
-    /**
-     * 选择值
-     *
-     * @access private
-     * @var array
-     */
-    private $_options = array();
 
     /**
      * 初始化当前输入项
@@ -110,6 +105,15 @@ class="mdui-checkbox-icon"></i>'.$label.'</label>');
 
         //print_r(current($this->_options)) ;
         return current($this->_options);
+    }
+
+    public function start()
+    {
+    }
+
+    public function end()
+    {
+        echo '</ul></div></div></div>';
     }
 
     /**

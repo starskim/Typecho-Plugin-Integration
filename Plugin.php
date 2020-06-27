@@ -64,7 +64,7 @@ class Integration_Plugin implements Typecho_Plugin_Interface
             $sqlTemplate = file_get_contents(__DIR__ . '/sql/Install/Pgsql.sql');
         }
 
-        if (empty($sqlTemplate)) throw new \Exception('暂不支持你的数据库');
+        if (empty($sqlTemplate)) throw new Exception('暂不支持你的数据库');
 
         $sql = str_replace('typecho_', $prefix, $sqlTemplate);
         $sql = str_replace('{charset}', 'utf8mb4', $sql);

@@ -21,19 +21,22 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 class Select_integration extends Typecho_Widget_Helper_Form_Element
 {
 
-    public function start(){}
-
-    public function end(){echo '</ul></div></div></div>';}
-
+    /**
+     * 选择值
+     *
+     * @access private
+     * @var array
+     */
+    private $_options = array();
 
     public function __construct($name = NULL, array $options = NULL, $value = NULL, $label = NULL, $description = NULL)
     {
         /** 创建html元素,并设置class */
         //parent::__construct('ul', array('class' => 'typecho-option', 'id' => 'typecho-option-item-' . $name . '-' . self::$uniqueId));
-        $this->addItem(new Integration('<div class="mdui-panel" mdui-panel=""><div class="mdui-panel-item"><div class="mdui-panel-item-header">'.$label. '</div><div class="mdui-panel-item-body"><ul style="padding-left: 0px; list-style: none!important" id="typecho-option-item-'.$name.'-'.self::$uniqueId.'">'));
+        $this->addItem(new Integration('<div class="mdui-panel" mdui-panel=""><div class="mdui-panel-item"><div class="mdui-panel-item-header">' . $label . '</div><div class="mdui-panel-item-body"><ul style="padding-left: 0px; list-style: none!important" id="typecho-option-item-' . $name . '-' . self::$uniqueId . '">'));
 
         $this->name = $name;
-        self::$uniqueId ++;
+        self::$uniqueId++;
 
         /** 运行自定义初始函数 */
         $this->init();
@@ -58,14 +61,6 @@ class Select_integration extends Typecho_Widget_Helper_Form_Element
     }
 
     /**
-     * 选择值
-     *
-     * @access private
-     * @var array
-     */
-    private $_options = array();
-
-    /**
      * 初始化当前输入项
      *
      * @access public
@@ -78,7 +73,7 @@ class Select_integration extends Typecho_Widget_Helper_Form_Element
         $input = new Typecho_Widget_Helper_Layout('select');
         $this->container($input->setAttribute('name', $name)
             ->setAttribute('id', $name . '-0-' . self::$uniqueId)
-            ->setAttribute('class','mdui-select'));
+            ->setAttribute('class', 'mdui-select'));
         //$this->label->setAttribute('for', $name . '-0-' . self::$uniqueId);
         $this->inputs[] = $input;
 
@@ -88,6 +83,15 @@ class Select_integration extends Typecho_Widget_Helper_Form_Element
         }
 
         return $input;
+    }
+
+    public function start()
+    {
+    }
+
+    public function end()
+    {
+        echo '</ul></div></div></div>';
     }
 
     /**
