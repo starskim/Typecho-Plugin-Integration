@@ -66,15 +66,10 @@ class Integration_Plugin implements Typecho_Plugin_Interface
 
         if (empty($sqlTemplate)) throw new \Exception('暂不支持你的数据库');
 
-        $sqlTemplate = str_replace('typecho_', $prefix, $sqlTemplate);
-        $sqlTemplate = str_replace('{charset}', 'utf8mb4', $sqlTemplate);
-        $sqlTemplate = explode(';', $sqlTemplate);
-        foreach ($sqlTemplate as $sql) {
-            $sql = trim($sql);
-            if ($sql) {
-                return $sql;
-            }
-        }
+        $sql = str_replace('typecho_', $prefix, $sqlTemplate);
+        $sql = str_replace('{charset}', 'utf8mb4', $sql);
+        return $sql;
+
     }
 
     public static function addRoute()
@@ -87,6 +82,11 @@ class Integration_Plugin implements Typecho_Plugin_Interface
         Typecho_Plugin::factory('admin/write-post.php')->bottom = array(__CLASS__, 'pfooter');
         Typecho_Plugin::factory('admin/write-page.php')->bottom = array(__CLASS__, 'pfooter');
         Typecho_Plugin::factory('Widget_Contents_Post_Edit')->write = array(__CLASS__, 'write');
+        //挂载发布文章和页面的接口
+        Typecho_Plugin::factory('Widget_Contents_Post_Edit')->finishPublish = array('Integration_Action', 'send');
+        Typecho_Plugin::factory('Widget_Contents_Page_Edit')->finishPublish = array('Integration_Action', 'send');
+        Helper::addRoute('baidu_sitemap_advanced', __TYPECHO_ADMIN_DIR__ . 'baidu_sitemap/advanced', 'Integration_Action', 'send_all');
+
     }
 
     public static function deactivate()
@@ -102,6 +102,7 @@ class Integration_Plugin implements Typecho_Plugin_Interface
     public static function removeRoute()
     {
         Helper::removeRoute('sitemap');
+        Helper::removeRoute('baidu_sitemap_advanced');
         Helper::removePanel(1, self::$panel);
     }
 
@@ -112,9 +113,11 @@ class Integration_Plugin implements Typecho_Plugin_Interface
     public function removeTable()
     {
         $Db = Typecho_Db::get();
+        $prefix = $Db->getPrefix();
         $sql = file_get_contents(__DIR__ . '/sql/Uninstall.sql');
+        $sql = str_replace('typecho_', $prefix, $sql);
         try {
-            $Db->query($sql);
+            $Db->query($sql, Typecho_Db::WRITE);
         } catch (Typecho_Exception $e) {
             return "删除数据库失败！";
         }
@@ -173,6 +176,7 @@ EOF;
         self::AutoTags($form);
         self::GoTop($form);
         self::ActivatePowerMode($form);
+        self::BaiduSubmit($form);
     }
 
 
@@ -237,6 +241,21 @@ EOF;
         $form->addInput($activeineditor);
         $form->addInput($colorful);
         $form->addInput($shake);
+        $form->addItem(new EndSymbol_Integration(2));
+    }
+
+    /**
+     * 百度结构化配置面板
+     * @param Typecho_Widget_Helper_Form $form
+     */
+    private static function BaiduSubmit(Typecho_Widget_Helper_Form $form)
+    {
+        $form->addItem(new Title_Integration('百度结构化'));
+        $element = new Text_integration('api', null, null, _t('接口调用地址'), '请登录百度站长平台获取');
+        $form->addInput($element);
+
+        $element = new Text_integration('group', null, 15, _t('分组URL数'), '每天最多只能发送50条，请酌情设置');
+        $form->addInput($element);
         $form->addItem(new EndSymbol_Integration(2));
     }
 

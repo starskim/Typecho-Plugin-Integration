@@ -37,10 +37,10 @@ if (isset($_POST['do'])) {
                 }
             }
             Typecho_Widget::widget('Widget_Notice')->set('成功删除蜘蛛日志', NULL, 'success');
-            Typecho_Response::redirect(Typecho_Common::url('extending.php?panel=' . Integration_Plugin::$panel. '&act=RobotsPlus', $_options->adminUrl));
+            Typecho_Response::redirect(Typecho_Common::url('extending.php?panel=' . Integration_Plugin::$panel . '&act=RobotsPlus', $_options->adminUrl));
         } else {
             Typecho_Widget::widget('Widget_Notice')->set('当前没有选择的日志', NULL, 'notice');
-            Typecho_Response::redirect(Typecho_Common::url('extending.php?panel=' . Integration_Plugin::$panel. '&act=RobotsPlus', $_options->adminUrl));
+            Typecho_Response::redirect(Typecho_Common::url('extending.php?panel=' . Integration_Plugin::$panel . '&act=RobotsPlus', $_options->adminUrl));
         }
     }
     if (strpos($do, 'clear') !== false) {
@@ -52,10 +52,10 @@ if (isset($_POST['do'])) {
             $lowtime = $gtime - ($cleartype * 86400);
             $_db->query($_db->delete($prefix . 'robots_logs')->where('ltime < ?', $lowtime));
             Typecho_Widget::widget('Widget_Notice')->set('清除日志成功', NULL, 'success');
-            Typecho_Response::redirect(Typecho_Common::url('extending.php?panel=' . Integration_Plugin::$panel. '&act=RobotsPlus', $_options->adminUrl));
+            Typecho_Response::redirect(Typecho_Common::url('extending.php?panel=' . Integration_Plugin::$panel . '&act=RobotsPlus', $_options->adminUrl));
         } catch (Typecho_Db_Exception $e) {
             Typecho_Widget::widget('Widget_Notice')->set('清除日志失败', NULL, 'notice');
-            Typecho_Response::redirect(Typecho_Common::url('extending.php?panel=' . Integration_Plugin::$panel. '&act=RobotsPlus', $_options->adminUrl));
+            Typecho_Response::redirect(Typecho_Common::url('extending.php?panel=' . Integration_Plugin::$panel . '&act=RobotsPlus', $_options->adminUrl));
         }
     }
 }
@@ -67,11 +67,11 @@ if (isset($_POST['rpage']) && $_POST['rtype'] !== '') {
     if ($oldtype !== $rtype) {
         $p = 1;
     }
-    $logs = $_db->fetchAll($_db->select()->from($prefix . 'robots_logs')->where('bot = ?', $rtype)->order($prefix . 'robots_logs.lid', Typecho_Db::SORT_DESC)->page($p, $pagecount));
-    $rows = count($_db->fetchAll($_db->select('lid')->from($prefix . 'robots_logs')->where('bot = ?', $rtype)));
+    $logs = $_db->fetchAll($_db->select()->from($_prefix . 'robots_logs')->where('bot = ?', $rtype)->order($_prefix . 'robots_logs.lid', Typecho_Db::SORT_DESC)->page($p, $pagecount));
+    $rows = count($_db->fetchAll($_db->select('lid')->from($_prefix . 'robots_logs')->where('bot = ?', $rtype)));
 } else {
-    $logs = $_db->fetchAll($_db->select()->from($prefix . 'robots_logs')->order($prefix . 'robots_logs.lid', Typecho_Db::SORT_DESC)->page($p, $pagecount));
-    $rows = count($_db->fetchAll($_db->select('lid')->from($prefix . 'robots_logs')));
+    $logs = $_db->fetchAll($_db->select()->from($_prefix . 'robots_logs')->order($_prefix . 'robots_logs.lid', Typecho_Db::SORT_DESC)->page($p, $pagecount));
+    $rows = count($_db->fetchAll($_db->select('lid')->from($_prefix . 'robots_logs')));
 }
 $co = $rows % $pagecount;
 $pageno = floor($rows / $pagecount);
@@ -81,7 +81,8 @@ if ($co !== 0) {
 ?>
 <div class="col-mb-12 start-01 typecho-list">
     <div class="typecho-list-operate clearfix">
-        <form method="post" action="<?php $_options->adminUrl('extending.php?panel=' . Integration_Plugin::$panel. '&act=RobotsPlus'); ?>">
+        <form method="post"
+              action="<?php $_options->adminUrl('extending.php?panel=' . Integration_Plugin::$panel . '&act=RobotsPlus'); ?>">
             <div class="operate">
                 <label>
                     <i class="sr-only">

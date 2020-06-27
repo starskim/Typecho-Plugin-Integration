@@ -21,7 +21,7 @@
 * [x] 标签自动生成 作者：[DT27](https://dt27.org)
 * [x] 页面顶部出现悬挂喵~点击触发至顶功能 作者：[Zero](https://mikuac.com)
 * [ ] 炫彩鼠标 作者：[Hoe](http://www.hoehub.com)
-* [ ] BaiduSubmit 作者：[老高](http://blog.phpgao.com/typecho_plugin_baidusubmit.html)
+* [x] BaiduSubmit 作者：[老高](http://blog.phpgao.com/typecho_plugin_baidusubmit.html)
 * [x] 打字特效 作者：[Hoe](http://www.hoehub.com) [熊猫小A](https://blog.imalan.cn)
 
 ## 其它
