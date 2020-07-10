@@ -6,7 +6,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
  *
  * @package Integration
  * @author Satrs_Kim
- * @version 1.1.0
+ * @version 1.2.0
  * @link https://blog.starskim.cn
  */
 
@@ -146,17 +146,17 @@ class Integration_Plugin implements Typecho_Plugin_Interface
  </div> 
  <div class="mdui-container">
   <div class="mdui-tab mdui-tab-scrollable mdui-tab-centered mdui-tab-full-width" mdui-tab>
-    <a href="#example1-tab1" class="mdui-ripple">著作</a>
+<!--    <a href="#example1-tab1" class="mdui-ripple">著作</a>-->
     <a href="#example1-tab2" class="mdui-ripple">说明</a>
     <a href="#example1-tab3" class="mdui-ripple">建议</a>
   </div>
 
-  <div id="example1-tab1" class="mdui-p-a-2"> 
-  <p>Sitemap：作者：<a href="https://www.bayun.org" target="_blank">八云酱</a></p>
-  <p>蛛来访日志：作者：<a href="http://www.yovisun.com" target="_blank">Yovi Sun</a>；修复人：<a href="https://www.catbei.com" target="_blank">猫贝</a></p>
+<!--  <div id="example1-tab1" class="mdui-p-a-2"> -->
+<!--  <p>Sitemap：作者：<a href="https://www.bayun.org" target="_blank">八云酱</a></p>-->
+<!--  <p>蛛来访日志：作者：<a href="http://www.yovisun.com" target="_blank">Yovi Sun</a>；修复人：<a href="https://www.catbei.com" target="_blank">猫贝</a></p>-->
 <!--  <p>评论拦截：作者：<a href="http://www.yovisun.com/archive/typecho-plugin-smartspam.html/" target="_blank">Yovis Blog</a></p>-->
 <!--  <p>如果以下内容侵权了您的利益请联系：<a href="https://803344.xyz/" target="_blank">小宇宙</a></p>-->
-  </div>
+<!--  </div>-->
   <div id="example1-tab2" class="mdui-p-a-2">
       <p>我写这个插件主要是为了给自己方便，不用每次主题更新都需要手动修改文件的问题</p>
     <p>有部分功能是搬自其它的插件</p>
@@ -177,6 +177,7 @@ EOF;
         self::GoTop($form);
         self::ActivatePowerMode($form);
         self::BaiduSubmit($form);
+        self::HoerMouse($form, $Path);
     }
 
 
@@ -256,6 +257,52 @@ EOF;
 
         $element = new Text_integration('group', null, 15, _t('分组URL数'), '每天最多只能发送50条，请酌情设置');
         $form->addInput($element);
+        $form->addItem(new EndSymbol_Integration(2));
+    }
+
+    /**
+     * 炫彩鼠标配置面板
+     * @param Typecho_Widget_Helper_Form $form
+     */
+    private static function HoerMouse(Typecho_Widget_Helper_Form $form, $Path)
+    {
+        $Images = $Path . 'assets/images';
+        // 鼠标样式
+        $options = [
+            'none' => _t('系统默认'),
+            'dew' => "<img src='{$Images}/dew/normal.cur'><img src='{$Images}/dew/link.cur'>",
+            'carrot' => "<img src='{$Images}/carrot/normal.cur'><img src='{$Images}/carrot/link.cur'>",
+            'exquisite' => "<img src='{$Images}/exquisite/normal.cur'><img src='{$Images}/exquisite/link.cur'>",
+            'marisa' => "<img src='{$Images}/marisa/normal.cur'><img src='{$Images}/marisa/link.cur'>",
+            'shark' => "<img src='{$Images}/shark/normal.cur'><img src='{$Images}/shark/link.cur'>",
+            'sketch' => "<img src='{$Images}/sketch/normal.cur'><img src='{$Images}/sketch/link.cur'>",
+            'star' => "<img src='{$Images}/star/normal.cur'><img src='{$Images}/star/link.cur'>",
+        ];
+        $bubbleType = new Radio_integration('mouseType', $options, 'none', _t('鼠标样式'));
+        $form->addInput($bubbleType);
+
+        $form->addItem(new Title_Integration('鼠标点击特效', '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;加载jQuery库、气泡类型、文字气泡、气泡颜色、气泡速度'));
+        // 气泡类型
+        $options = [
+            'none' => _t('无'),
+            'text' => _t('文字气泡'),
+            'heart' => _t('爱心气泡'),
+            'fireworks' => _t('fireworks+anime喷墨气泡'),
+        ];
+        $bubbleType = new Radio_integration('bubbleType', $options, 'none', _t('气泡类型'));
+        $form->addInput($bubbleType);
+
+        // 气泡文字
+        $bubbleText = new Text_integration('bubbleText', null, _t('欢迎来到我的小站!'), _t('文字气泡填写'), _t('如果选择文字气泡类型, 请填写文字'));
+        $form->addInput($bubbleText);
+
+        // 气泡颜色
+        $bubbleColor = new Text_integration('bubbleColor', null, _t('随机'), _t('文字气泡颜色'), _t('如果选择文字气泡类型, 请填写气泡颜色, 可填入"随机"或十六进制颜色值 如#2db4d8'));
+        $form->addInput($bubbleColor);
+
+        // 气泡速度
+        $bubbleSpeed = new Text_integration('bubbleSpeed', null, _t('3000'), _t('文字气泡速度'), _t('如果选择文字气泡类型, 请填写气泡速度 默认3秒'));
+        $form->addInput($bubbleSpeed);
         $form->addItem(new EndSymbol_Integration(2));
     }
 
@@ -436,6 +483,142 @@ EOF;
                 });
                 </script>\n";
         }
+        //点击爱心
+        $arr = self::handleBubbleType($config);
+        echo $arr['html'];
+        echo $arr['js'];
+    }
+
+    private static function handleBubbleType($HoerMouse)
+    {
+        $bubbleType = $HoerMouse->bubbleType;
+        $dir = Helper::options()->pluginUrl . '/Integration/assets';
+        $js = '';
+        $html = '';
+        switch ($bubbleType) {
+            case 'text':
+                $bubbleColor = $HoerMouse->bubbleColor;
+                $bubbleSpeed = (int)$HoerMouse->bubbleSpeed;
+                $bubbleText = $HoerMouse->bubbleText;
+                $js .= '<script>';
+                $js .= <<<JS
+var index = 0;
+jQuery(document).ready(function() {
+    $(window).click(function(e) {
+        var string = "{$bubbleText}";
+        var strings = string.split('');
+        var span = $("<span>").text(strings[index]);
+        index = (index + 1) % strings.length;
+        var x = e.pageX,
+        y = e.pageY;
+        var color = "{$bubbleColor}";
+        if (color == "随机") {
+            var colorValue="0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f";
+            var colorArray = colorValue.split(",");
+            color="#";
+            for(var i=0;i<6;i++){
+                color+=colorArray[Math.floor(Math.random()*16)];
+            }
+        }
+        span.css({
+            "z-index": 999,
+            "top": y - 20,
+            "left": x,
+            "position": "absolute",
+            "font-weight": "bold",
+            "color": color
+        });
+        $("body").append(span);
+        var styles = {
+            "top": y - 160,
+            "opacity": 0
+        };
+        span.animate(styles, {$bubbleSpeed}, function() {
+            span.remove();
+        });
+    });
+});
+JS;
+                $js .= '</script>';
+                break;
+            case 'heart':
+                $js .= '<script>';
+                $js .= <<<JS
+    // 鼠标点击爱心特效
+    !function (e, t, a) {
+        function r() {
+            for (var e = 0; e < s.length; e++) {
+                s[e].alpha <= 0 ? (t.body.removeChild(s[e].el), s.splice(e, 1)) : (s[e].y--, s[e].scale += .004, s[e].alpha -= .013, s[e].el.style.cssText = "left:" + s[e].x + "px;top:" + s[e].y + "px;opacity:" + s[e].alpha + ";transform:scale(" + s[e].scale + "," + s[e].scale + ") rotate(45deg);background:" + s[e].color + ";z-index:99999");
+            }
+            requestAnimationFrame(r)
+        }
+
+        function n() {
+            var t = "function" == typeof e.onclick && e.onclick;
+            e.onclick = function (e) {
+                t && t(),
+                    o(e)
+            }
+        }
+
+        function o(e) {
+            var a = t.createElement("div");
+            a.className = "heart",
+                s.push({
+                    el: a,
+                    x: e.clientX - 5,
+                    y: e.clientY - 5,
+                    scale: 1,
+                    alpha: 1,
+                    color: c()
+                }),
+                t.body.appendChild(a)
+        }
+
+        function i(e) {
+            var a = t.createElement("style");
+            a.type = "text/css";
+            try {
+                a.appendChild(t.createTextNode(e))
+            } catch (t) {
+                a.styleSheet.cssText = e
+            }
+            t.getElementsByTagName("head")[0].appendChild(a)
+        }
+
+        function c() {
+            return "rgb(" + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + ")"
+        }
+
+        var s = [];
+        e.requestAnimationFrame = e.requestAnimationFrame || e.webkitRequestAnimationFrame || e.mozRequestAnimationFrame || e.oRequestAnimationFrame || e.msRequestAnimationFrame ||
+            function (e) {
+                setTimeout(e, 1e3 / 60)
+            },
+            i(".heart{width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: fixed;}.heart:after{top: -5px;}.heart:before{left: -5px;}"),
+            n(),
+            r()
+    }(window, document);
+JS;
+                $js .= '</script>';
+                break;
+            case 'fireworks':
+                $html .= '<canvas id="fireworks" style="position:fixed;left:0;top:0;pointer-events:none;"></canvas>';
+                $js .= '<script type="text/javascript" src="https://cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script>';
+                $js .= "<script type='text/javascript' src='{$dir}/js/fireworks.js'></script>";
+                break;
+        }
+        $mouseType = $HoerMouse->mouseType;
+        $imageDir = Helper::options()->pluginUrl . '/Integration/assets/images';
+        if ($mouseType != 'none') {
+            $js .= '<script>';
+            $js .= <<<JS
+$("body").css("cursor", "url('{$imageDir}/{$mouseType}/normal.cur'), default");
+$("a").css("cursor", "url('{$imageDir}/{$mouseType}/link.cur'), pointer");
+JS;
+            $js .= '</script>';
+        }
+        return compact('js', 'html');
     }
 
     /**
@@ -478,4 +661,5 @@ EOF;
             }
         }
     }
+
 }

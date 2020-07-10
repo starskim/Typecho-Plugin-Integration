@@ -97,10 +97,10 @@ class Integration_Action extends Typecho_Widget implements Widget_Interface_Do
      */
     public function post($url, $group = null)
     {
-        $this->init();
+        $options = Helper::options();
 
         //获取API
-        $api = $this->_cfg->api;
+        $api = $options->plugin('Integration')->api;
 
         //准备数据
         if (is_array($url)) {
@@ -144,13 +144,13 @@ class Integration_Action extends Typecho_Widget implements Widget_Interface_Do
             $log['result'] = '失败';
         }
 
-        $this->logger($log);
+        self::logger($log);
     }
 
     public function logger($data)
     {
-        $this->init();
-        $this->_db->query($this->_db->insert('table.baidusubmit')
+        $db = Typecho_Db::get();
+        $db->query($db->insert('table.baidusubmit')
             ->rows(array(
                 'subject' => $data['subject'],
                 'action' => $data['action'],
@@ -169,16 +169,17 @@ class Integration_Action extends Typecho_Widget implements Widget_Interface_Do
      */
     public function send($contents, $class)
     {
-        //初始化配置
-        $this->init();
 
         //如果文章属性为隐藏或滞后发布
         if ('publish' != $contents['visibility'] || $contents['created'] > time()) {
             return;
         }
 
+        //获取系统配置
+        $options = Helper::options();
+
         //判断是否配置好API
-        if (is_null($this->_cfg->api)) {
+        if (is_null($options->plugin('Integration')->api)) {
             throw new Typecho_Plugin_Exception(_t('api未配置'));
         }
 
@@ -189,8 +190,9 @@ class Integration_Action extends Typecho_Widget implements Widget_Interface_Do
         $routeExists = (NULL != Typecho_Router::get($type));
 
         if (!is_null($routeExists)) {
+            $db = Typecho_Db::get();
             $contents['cid'] = $class->cid;
-            $contents['categories'] = $this->_db->fetchAll($this->_db->select()->from('table.metas')
+            $contents['categories'] = $db->fetchAll($db->select()->from('table.metas')
                 ->join('table.relationships', 'table.relationships.mid = table.metas.mid')
                 ->where('table.relationships.cid = ?', $contents['cid'])
                 ->where('table.metas.type = ?', 'category')
@@ -205,10 +207,10 @@ class Integration_Action extends Typecho_Widget implements Widget_Interface_Do
 
         //生成永久连接
         $path_info = $routeExists ? Typecho_Router::url($type, $contents) : '#';
-        $permalink = Typecho_Common::url($path_info, $this->_options->index);
+        $permalink = Typecho_Common::url($path_info, $options->index);
 
         //调用post方法
-        $this->post($permalink);
+        self::post($permalink);
     }
 
     public function action()
