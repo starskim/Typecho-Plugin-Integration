@@ -23,6 +23,7 @@
 * [x] 炫彩鼠标 作者：[Hoe](http://www.hoehub.com)
 * [x] BaiduSubmit 作者：[老高](http://blog.phpgao.com/typecho_plugin_baidusubmit.html)
 * [x] 打字特效 作者：[Hoe](http://www.hoehub.com) [熊猫小A](https://blog.imalan.cn)
+* [x] SmartSpam 作者：[YoviSun](http://www.yovisun.com)
 
 ## 其它
 

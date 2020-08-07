@@ -6,7 +6,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
  *
  * @package Integration
  * @author Satrs_Kim
- * @version 1.2.0
+ * @version 1.3.0
  * @link https://blog.starskim.cn
  */
 
@@ -79,10 +79,10 @@ class Integration_Plugin implements Typecho_Plugin_Interface
         Typecho_Plugin::factory('Widget_Archive')->header = array(__CLASS__, 'isbot');
         Typecho_Plugin::factory('Widget_Archive')->header = array(__CLASS__, 'header');
         Typecho_Plugin::factory('Widget_Archive')->footer = array(__CLASS__, 'footer');
+        Typecho_Plugin::factory('Widget_Feedback')->comment = array(__CLASS__, 'filter');
         Typecho_Plugin::factory('admin/write-post.php')->bottom = array(__CLASS__, 'pfooter');
         Typecho_Plugin::factory('admin/write-page.php')->bottom = array(__CLASS__, 'pfooter');
         Typecho_Plugin::factory('Widget_Contents_Post_Edit')->write = array(__CLASS__, 'write');
-        //挂载发布文章和页面的接口
         Typecho_Plugin::factory('Widget_Contents_Post_Edit')->finishPublish = array('Integration_Action', 'send');
         Typecho_Plugin::factory('Widget_Contents_Page_Edit')->finishPublish = array('Integration_Action', 'send');
         Helper::addRoute('baidu_sitemap_advanced', __TYPECHO_ADMIN_DIR__ . 'baidu_sitemap/advanced', 'Integration_Action', 'send_all');
@@ -178,6 +178,7 @@ EOF;
         self::ActivatePowerMode($form);
         self::BaiduSubmit($form);
         self::HoerMouse($form, $Path);
+        self::SmartSpam($form);
     }
 
 
@@ -304,6 +305,81 @@ EOF;
         $bubbleSpeed = new Text_integration('bubbleSpeed', null, _t('3000'), _t('文字气泡速度'), _t('如果选择文字气泡类型, 请填写气泡速度 默认3秒'));
         $form->addInput($bubbleSpeed);
         $form->addItem(new EndSymbol_Integration(2));
+    }
+
+    /**
+     * SmartSpam配置面板
+     * @param Typecho_Widget_Helper_Form $form
+     */
+    private static function SmartSpam(Typecho_Widget_Helper_Form $form)
+    {
+        $opt_length = new Radio_integration('opt_length', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
+            "<span style='color: #de1cc6'>评论字符长度操作</span>", "如果评论中长度不符合条件，则强行按该操作执行。如果选择[无动作]，将忽略下面长度的设置");
+        $length_min = new Text_integration('length_min', NULL, '1', "<span style='color: #de1cc6'>最短字符</span>", '允许评论的最短字符数。');
+        $length_max = new Text_integration('length_max', NULL, '200', "<span style='color: #de1cc6'>最长字符</span>", '允许评论的最长字符数');
+        $opt_ban = new Radio_integration('opt_ban', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
+            "<span style='color: #FF0000'>禁止词汇操作</span>", "如果评论中包含禁止词汇列表中的词汇，将执行该操作");
+        $words_ban = new Textarea_integration('words_ban', NULL, "傻逼\n操你妈\n智障\n傻子",
+            "<span style='color: #FF0000'>禁止词汇表</span>", _t('多条词汇请用换行符隔开'));
+        $opt_chk = new Radio_integration('opt_chk', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
+            "<span style='color: #FF9797'>敏感词汇操作</span>", "如果评论中包含敏感词汇列表中的词汇，将执行该操作");
+        $words_chk = new Textarea_integration('words_chk', NULL, "http://",
+            "<span style='color: #FF9797'>敏感词汇表</span>", _t('多条词汇请用换行符隔开<br />注意：如果词汇同时出现于禁止词汇，则执行禁止词汇操作'));
+        $opt_au_length = new Radio_integration('opt_au_length', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
+            "<span style='color: #FF44FF'>昵称字符长度操作</span>", "如果昵称长度不符合条件，则强行按该操作执行。如果选择[无动作]，将忽略下面长度的设置");
+        $au_length_min = new Text_integration('au_length_min', NULL, '1', "<span style='color: #FF44FF'>昵称最短字符数</span>", '昵称允许的最短字符数。');
+        $au_length_max = new Text_integration('au_length_max', NULL, '20', "<span style='color: #FF44FF'>昵称最长字符数</span>", '昵称允许的最长字符数');
+        $opt_nojp_au = new Radio_integration('opt_nojp_au', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
+            "<span style='color: #84C1FF'>昵称日文操作</span>", "如果用户昵称中包含日文，则强行按该操作执行");
+        $opt_nourl_au = new Radio_integration('opt_nourl_au', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
+            "<span style='color: #0072E3'>昵称网址操作</span>", "如果用户昵称是网址，则强行按该操作执行");
+        $opt_au = new Radio_integration('opt_au', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
+            "<span style='color: #B15BFF'>屏蔽昵称关键词操作</span>", "如果评论发布者的昵称含有该关键词，将执行该操作");
+        $words_au = new Textarea_integration('words_au', NULL, "",
+            "<span style='color: #B15BFF'>屏蔽昵称关键词表</span>", _t('多个关键词请用换行符隔开'));
+        $opt_ip = new Radio_integration('opt_ip', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
+            "<span style='color: #FF5809'>屏蔽IP操作</span>", "如果评论发布者的IP在屏蔽IP段，将执行该操作");
+        $words_ip = new Textarea_integration('words_ip', NULL, "0.0.0.0",
+            "<span style='color: #FF5809'>屏蔽IP</span>", _t('多条IP请用换行符隔开<br />支持用*号匹配IP段，如：192.168.*.*'));
+        $opt_mail = new Radio_integration('opt_mail', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
+            "<span style='color: #4F9D9D'>屏蔽邮箱操作</span>", "如果评论发布者的邮箱与禁止的一致，将执行该操作");
+        $words_mail = new Textarea_integration('words_mail', NULL, "",
+            "<span style='color: #4F9D9D'>邮箱关键词</span>", _t('多个邮箱请用换行符隔开<br />可以是邮箱的全部，或者邮箱部分关键词'));
+        $opt_url = new Radio_integration('opt_url', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
+            "<span style='color: #AFAF61'>屏蔽网址操作</span>", "如果评论发布者的网址与禁止的一致，将执行该操作。如果网址为空，该项不会起作用。");
+        $words_url = new Textarea_integration('words_url', NULL, "",
+            "<span style='color: #AFAF61'>网址关键词</span>", _t('多个网址请用换行符隔开<br />可以是网址的全部，或者网址部分关键词。如果网址为空，该项不会起作用。'));
+        $opt_title = new Radio_integration('opt_title', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
+            "<span style='color: #743A3A'>内容含有文章标题</span>", "如果评论内容中含有本页面的文章标题，则强行按该操作执行");
+        $opt_nojp = new Radio_integration('opt_nojp', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
+            "<span style='color: #CF9E9E'>日文评论操作</span>", "如果评论中包含日文，则强行按该操作执行");
+        $opt_nocn = new Radio_integration('opt_nocn', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
+            "<span style='color: #CF9E9E'>非中文评论操作</span>", "如果评论中不包含中文，则强行按该操作执行");
+        $form->addItem(new Title_integration('评论拦截', '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;颜色区分（默认开启,自行配置）&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;作者：<a href="http://www.yovisun.com/archive/typecho-plugin-smartspam.html/" target="_blank"> Yovis Blog</a>'));
+        $form->addInput($opt_length);
+        $form->addInput($length_min);
+        $form->addInput($length_max);
+        $form->addInput($opt_ban);
+        $form->addInput($words_ban);
+        $form->addInput($opt_chk);
+        $form->addInput($words_chk);
+        $form->addInput($opt_au_length);
+        $form->addInput($au_length_min);
+        $form->addInput($au_length_max);
+        $form->addInput($opt_nojp_au);
+        $form->addInput($opt_nourl_au);
+        $form->addInput($opt_au);
+        $form->addInput($words_au);
+        $form->addInput($opt_ip);
+        $form->addInput($words_ip);
+        $form->addInput($opt_mail);
+        $form->addInput($words_mail);
+        $form->addInput($opt_url);
+        $form->addInput($words_url);
+        $form->addInput($opt_title);
+        $form->addInput($opt_nojp);
+        $form->addInput($opt_nocn);
+        $form->addItem(new EndSymbol_integration(2));
     }
 
     /**
@@ -662,4 +738,207 @@ JS;
         }
     }
 
+    /**
+     * 评论过滤器
+     *
+     */
+    public static function filter($comment, $post)
+    {
+        $options = Helper::options();
+        $filter_set = $options->plugin('Integration');
+        $opt = "none";
+        $error = "";
+
+
+        //屏蔽评论内容包含文章标题
+        if ($opt == "none" && $filter_set->opt_title != "none") {
+            $db = Typecho_Db::get();
+            // 获取评论所在文章
+            $po = $db->fetchRow($db->select('title')->from('table.contents')->where('cid = ?', $comment['cid']));
+            if (strstr($comment['text'], $po['title'])) {
+                $error = "对不起，评论内容不允许包含文章标题";
+                $opt = $filter_set->opt_title;
+            }
+        }
+
+
+        //屏蔽IP段处理
+        if ($opt == "none" && $filter_set->opt_ip != "none") {
+            if (Integration_Plugin::check_ip($filter_set->words_ip, $comment['ip'])) {
+                $error = "评论发布者的IP已被管理员屏蔽";
+                $opt = $filter_set->opt_ip;
+            }
+        }
+
+
+        //屏蔽邮箱处理
+        if ($opt == "none" && $filter_set->opt_mail != "none") {
+            if (Integration_Plugin::check_in($filter_set->words_mail, $comment['mail'])) {
+                $error = "评论发布者的邮箱地址被管理员屏蔽";
+                $opt = $filter_set->opt_mail;
+            }
+        }
+
+        //屏蔽网址处理
+        if (!empty($filter_set->words_url)) {
+            if ($opt == "none" && $filter_set->opt_url != "none") {
+                if (Integration_Plugin::check_in($filter_set->words_url, $comment['url'])) {
+                    $error = "评论发布者的网址被管理员屏蔽";
+                    $opt = $filter_set->opt_url;
+                }
+            }
+        }
+
+
+        //屏蔽昵称关键词处理
+        if ($opt == "none" && $filter_set->opt_au != "none") {
+            if (Integration_Plugin::check_in($filter_set->words_au, $comment['author'])) {
+                $error = "对不起，昵称的部分字符已经被管理员屏蔽，请更换";
+                $opt = $filter_set->opt_au;
+            }
+        }
+
+
+        //日文评论处理
+        if ($opt == "none" && $filter_set->opt_nojp != "none") {
+            if (preg_match("/[\x{3040}-\x{31ff}]/u", $comment['text']) > 0) {
+                $error = "禁止使用日文";
+                $opt = $filter_set->opt_nojp;
+            }
+        }
+
+
+        //日文用户昵称处理
+        if ($opt == "none" && $filter_set->opt_nojp_au != "none") {
+            if (preg_match("/[\x{3040}-\x{31ff}]/u", $comment['author']) > 0) {
+                $error = "用户昵称禁止使用日文";
+                $opt = $filter_set->opt_nojp_au;
+            }
+        }
+
+
+        //昵称长度检测
+        if ($opt == "none" && $filter_set->opt_au_length != "none") {
+            if (Integration_Plugin::strLength($comment['author']) < $filter_set->au_length_min) {
+                $error = "昵称请不得少于" . $filter_set->au_length_min . "个字符";
+                $opt = $filter_set->opt_au_length;
+            } else
+                if (Integration_Plugin::strLength($comment['author']) > $filter_set->au_length_max) {
+                    $error = "昵称请不得多于" . $filter_set->au_length_max . "个字符";
+                    $opt = $filter_set->opt_au_length;
+                }
+
+        }
+
+        //用户昵称网址判断处理
+        if ($opt == "none" && $filter_set->opt_nourl_au != "none") {
+            if (preg_match(" /^((https?|ftp|news):\/\/)?([a-z]([a-z0-9\-]*[\.。])+([a-z]{2}|aero|arpa|biz|com|coop|edu|gov|info|int|jobs|mil|museum|name|nato|net|org|pro|travel)|(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))(\/[a-z0-9_\-\.~]+)*(\/([a-z0-9_\-\.]*)(\?[a-z0-9+_\-\.%=&]*)?)?(#[a-z][a-z0-9_]*)?$/ ", $comment['author']) > 0) {
+                $error = "用户昵称不允许为网址";
+                $opt = $filter_set->opt_nourl_au;
+            }
+        }
+
+
+        //纯中文评论处理
+        if ($opt == "none" && $filter_set->opt_nocn != "none") {
+            if (preg_match("/[\x{4e00}-\x{9fa5}]/u", $comment['text']) == 0) {
+                $error = "评论内容请不少于一个中文汉字";
+                $opt = $filter_set->opt_nocn;
+            }
+        }
+
+
+        //字符长度检测
+        if ($opt == "none" && $filter_set->opt_length != "none") {
+            if (Integration_Plugin::strLength($comment['text']) < $filter_set->length_min) {
+                $error = "评论内容请不得少于" . $filter_set->length_min . "个字符";
+                $opt = $filter_set->opt_length;
+            } else
+                if (Integration_Plugin::strLength($comment['text']) > $filter_set->length_max) {
+                    $error = "评论内容请不得多于" . $filter_set->length_max . "个字符";
+                    $opt = $filter_set->opt_length;
+                }
+
+        }
+
+        //检查禁止词汇
+        if ($opt == "none" && $filter_set->opt_ban != "none") {
+            if (Integration_Plugin::check_in($filter_set->words_ban, $comment['text'])) {
+                $error = "评论内容中包含禁止词汇";
+                $opt = $filter_set->opt_ban;
+            }
+        }
+        //检查敏感词汇
+        if ($opt == "none" && $filter_set->opt_chk != "none") {
+            if (Integration_Plugin::check_in($filter_set->words_chk, $comment['text'])) {
+                $error = "评论内容中包含敏感词汇";
+                $opt = $filter_set->opt_chk;
+            }
+        }
+
+        //执行操作
+        if ($opt == "abandon") {
+            Typecho_Cookie::set('__typecho_remember_text', $comment['text']);
+            throw new Typecho_Widget_Exception($error);
+        } else if ($opt == "spam") {
+            $comment['status'] = 'spam';
+        } else if ($opt == "waiting") {
+            $comment['status'] = 'waiting';
+        }
+        Typecho_Cookie::delete('__typecho_remember_text');
+        return $comment;
+    }
+
+    /**
+     * 检查$ip中是否在$words_ip的IP段中
+     *
+     */
+    private static function check_ip($words_ip, $ip)
+    {
+        $words = explode("\n", $words_ip);
+        if (empty($words)) {
+            return false;
+        }
+        foreach ($words as $word) {
+            $word = trim($word);
+            if (false !== strpos($word, '*')) {
+                $word = "/^" . str_replace('*', '\d{1,3}', $word) . "$/";
+                if (preg_match($word, $ip)) {
+                    return true;
+                }
+            } else {
+                if (false !== strpos($ip, $word)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 检查$str中是否含有$words_str中的词汇
+     *
+     */
+    private static function check_in($words_str, $str)
+    {
+        $words = explode("\n", $words_str);
+        if (empty($words)) {
+            return false;
+        }
+        foreach ($words as $word) {
+            if (false !== strpos($str, trim($word))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * PHP获取字符串中英文混合长度
+     */
+    private static function strLength($str)
+    {
+        preg_match_all('/./us', $str, $match);
+        return count($match[0]);  // 输出9
+    }
 }

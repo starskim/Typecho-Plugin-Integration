@@ -62,7 +62,7 @@ class Textarea_integration extends Typecho_Widget_Helper_Form_Element
     public function input($name = NULL, array $options = NULL)
     {
         $this->addItem(new Integration('<div class="mdui-textfield">'));
-        $input = new Typecho_Widget_Helper_Layout('textarea', array('id' => $name . '-0-' . self::$uniqueId, 'name' => $name, 'class' => 'mdui-textfield-input', 'rows' => '4'));
+        $input = new Typecho_Widget_Helper_Layout('textarea', array('id' => $name . '-0-' . self::$uniqueId, 'name' => $name, 'class' => 'mdui-textfield-input'));
         $this->addItem(new Integration("</div>"));
         //$this->label->setAttribute('for', $name . '-0-' . self::$uniqueId);
         $this->container($input->setClose(false));
