@@ -19,10 +19,8 @@
 * [x] 生成Sitemap.xml 作者：[八云酱](https://www.bayun.org)
 * [x] 蜘蛛来访日志插件 作者：[Yovi Sun](http://www.yovisun.com) 修复：[猫贝](https://www.catbei.com)
 * [x] 标签自动生成 作者：[DT27](https://dt27.org)
-* [x] 页面顶部出现悬挂喵~点击触发至顶功能 作者：[Zero](https://mikuac.com)
 * [x] 炫彩鼠标 作者：[Hoe](http://www.hoehub.com)
 * [x] BaiduSubmit 作者：[老高](http://blog.phpgao.com/typecho_plugin_baidusubmit.html)
-* [x] 打字特效 作者：[Hoe](http://www.hoehub.com) [熊猫小A](https://blog.imalan.cn)
 * [x] SmartSpam 作者：[YoviSun](http://www.yovisun.com)
 
 ## 其它

@@ -903,14 +903,16 @@
     animation: falling 3s linear infinite
 }
 
-.topButton {
-    display: none;
-!important
-}
+@media (min-width: 1024px) {
+    .topButton {
+        display: none;
+    !important
+    }
 
-#goToTop {
-    display: none;
-!important
+    #goToTop {
+        display: none;
+    !important
+    }
 }
 
 .back-to-top {
