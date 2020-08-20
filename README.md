@@ -1,4 +1,6 @@
 # Typecho-Plugin-Integration
+[![GitHub license](https://img.shields.io/github/license/starskim/Typecho-Plugin-Integration?style=flat-square)](https://github.com/starskim/Typecho-Plugin-Integration/blob/master/LICENSE)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fstarskim%2FTypecho-Plugin-Integration.svg?type=small)](https://app.fossa.com/projects/git%2Bgithub.com%2Fstarskim%2FTypecho-Plugin-Integration?ref=badge_small)
 
 基于Typecho博客插件整合的一个小插件！
 
