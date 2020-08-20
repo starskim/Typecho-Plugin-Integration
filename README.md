@@ -28,3 +28,9 @@
 有 `bug` 直接提 `issue`
 
 [博客留言](https://blog.starskim.cn/guestbook.html)
+
+## License
+
+The MIT License (MIT). Please see [License File](LICENSE) for more information.
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fstarskim%2FTypecho-Plugin-Integration.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fstarskim%2FTypecho-Plugin-Integration?ref=badge_large)
