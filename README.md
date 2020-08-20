@@ -1,4 +1,6 @@
 # Typecho-Plugin-Integration
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fstarskim%2FTypecho-Plugin-Integration.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fstarskim%2FTypecho-Plugin-Integration?ref=badge_shield)
+
 
 基于Typecho博客插件整合的一个小插件！
 
@@ -28,3 +30,6 @@
 有 `bug` 直接提 `issue`
 
 [博客留言](https://blog.starskim.cn/guestbook.html)
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fstarskim%2FTypecho-Plugin-Integration.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fstarskim%2FTypecho-Plugin-Integration?ref=badge_large)
