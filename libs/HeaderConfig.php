@@ -1,5 +1,6 @@
 <?php
 
+require_once 'Services/RobotsPlus.php';
 require_once 'Services/ReturnTop.php';
 
 class headerConfig
@@ -16,6 +17,7 @@ class headerConfig
         $options = Helper::options();
         $config = $options->plugin('Integration');
         $PluginPath = $options->pluginUrl . '/Integration/assets/';
+        RobotsPlus::header($config);
         ReturnTop::header($config, $PluginPath);
 
     }

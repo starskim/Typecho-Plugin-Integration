@@ -83,7 +83,7 @@ EOF;
             '360' => '360搜索'
         );
         $botlist = new Checkbox_integration('botlist', $options, array('baidu', 'google', 'sogou', 'youdao', 'soso', 'bing', 'yahoo', '360'), '蜘蛛记录设置', '请选择要记录的蜘蛛日志');
-        $pagecount = new Text_integration('pagecount', NULL, '100', '分页数量', '每页显示的日志数量');
+        $pagecount = new Text_integration('pagecount', NULL, '20', '分页数量', '每页显示的日志数量');
         $dbool = array(
             '0' => '删除',
             '1' => '不删除'

@@ -5,11 +5,11 @@ require_once 'Services.php';
 class ActivatePowerMode extends Services
 {
 
-    public static function header($plugin, $Path)
+    public static function header($plugin, $Path = Null)
     {
     }
 
-    public static function footer($plugin, $Path)
+    public static function footer($plugin, $Path = Null)
     {
         $colorful = $plugin->colorful;
         $shake = $plugin->shake;

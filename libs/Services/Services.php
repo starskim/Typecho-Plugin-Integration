@@ -11,7 +11,7 @@ abstract class Services implements ServiceInterfaces
      * @param unknown header
      * @return unknown
      */
-    abstract public static function header($plugin, $Path);
+    abstract public static function header($plugin, $Path = Null);
 
     /**
      * 页脚输出相关代码
@@ -20,5 +20,5 @@ abstract class Services implements ServiceInterfaces
      * @param unknown footer
      * @return unknown
      */
-    abstract public static function footer($plugin, $Path);
+    abstract public static function footer($plugin, $Path = Null);
 }

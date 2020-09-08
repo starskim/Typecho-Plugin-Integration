@@ -31,7 +31,7 @@ if (isset($_POST['do'])) {
             $deleteCount = 0;
             if ($lids && is_array($lids)) {
                 foreach ($lids as $lid) {
-                    if ($_db->query($_db->delete($prefix . 'robots_logs')->where('lid = ?', $lid))) {
+                    if ($_db->query($_db->delete($_prefix . 'robots_logs')->where('lid = ?', $lid))) {
                         $deleteCount++;
                     }
                 }
@@ -50,7 +50,7 @@ if (isset($_POST['do'])) {
             $offset = $_options->timezone - $_options->serverTimezone;
             $gtime = $timeStamp + $offset;
             $lowtime = $gtime - ($cleartype * 86400);
-            $_db->query($_db->delete($prefix . 'robots_logs')->where('ltime < ?', $lowtime));
+            $_db->query($_db->delete($_prefix . 'robots_logs')->where('ltime < ?', $lowtime));
             Typecho_Widget::widget('Widget_Notice')->set('清除日志成功', NULL, 'success');
             Typecho_Response::redirect(Typecho_Common::url('extending.php?panel=' . Integration_Plugin::$panel . '&act=RobotsPlus', $_options->adminUrl));
         } catch (Typecho_Db_Exception $e) {
@@ -100,41 +100,6 @@ if ($co !== 0) {
                             <a lang="<?php _e('您确认要删除这些日志吗?'); ?>" type="submit"><?php _e('删除'); ?></a>
                         </li>
                     </ul>
-                    <button class="btn btn-s btn-warn btn-operate"
-                            href="<?php $_options->adminUrl('extending.php?panel=' . Integration_Plugin::$panel . '&act=RobotsPlus&do=clear_0'); ?>"
-                            lang="<?php _e('您确认要清除所有的日志吗?'); ?>">
-                        <?php _e('清除所有'); ?>
-                    </button>
-                    <button class="btn btn-s btn-warn btn-operate"
-                            href="<?php $_options->adminUrl('extending.php?panel=' . Integration_Plugin::$panel . '&act=RobotsPlus&do=clear_1'); ?>"
-                            lang="<?php _e('您确认要只保留一天内的日志吗?'); ?>">
-                        <?php _e('保留一天'); ?>
-                    </button>
-                    <button class="btn btn-s btn-warn btn-operate"
-                            href="<?php $_options->adminUrl('extending.php?panel=' . Integration_Plugin::$panel . '&act=RobotsPlus&do=clear_2'); ?>"
-                            lang="<?php _e('您确认要只保留两天内的日志吗?'); ?>">
-                        <?php _e('保留两天'); ?>
-                    </button>
-                    <button class="btn btn-s btn-warn btn-operate"
-                            href="<?php $_options->adminUrl('extending.php?panel=' . Integration_Plugin::$panel . '&act=RobotsPlus&do=clear_3'); ?>"
-                            lang="<?php _e('您确认要只保留三天内的日志吗?'); ?>">
-                        <?php _e('保留三天'); ?>
-                    </button>
-                    <button class="btn btn-s btn-warn btn-operate"
-                            href="<?php $_options->adminUrl('extending.php?panel=' . Integration_Plugin::$panel . '&act=RobotsPlus&do=clear_7'); ?>"
-                            lang="<?php _e('您确认要只保留一周内的日志吗?'); ?>">
-                        <?php _e('保留一周'); ?>
-                    </button>
-                    <button class="btn btn-s btn-warn btn-operate"
-                            href="<?php $_options->adminUrl('extending.php?panel=' . Integration_Plugin::$panel . '&act=RobotsPlus&do=clear_15'); ?>"
-                            lang="<?php _e('您确认要只保留半个月内的日志吗?'); ?>">
-                        <?php _e('保留半个月'); ?>
-                    </button>
-                    <button class="btn btn-s btn-warn btn-operate"
-                            href="<?php $_options->adminUrl('extending.php?panel=' . Integration_Plugin::$panel . '&act=RobotsPlus&do=clear_30'); ?>"
-                            lang="<?php _e('你确认要只保留一个月内的日志吗?'); ?>">
-                        <?php _e('保留一个月'); ?>
-                    </button>
                 </div>
             </div>
             <div class="search" role="search">

@@ -12,7 +12,7 @@ class HoerMouse extends Services
      * @param unknown header
      * @return unknown
      */
-    public static function header($plugin, $Path)
+    public static function header($plugin, $Path = Null)
     {
         // TODO: Implement header() method.
     }
@@ -24,7 +24,7 @@ class HoerMouse extends Services
      * @param unknown footer
      * @return unknown
      */
-    public static function footer($plugin, $Path)
+    public static function footer($plugin, $Path = Null)
     {
         //点击爱心
         $arr = self::handleBubbleType($plugin, $Path);

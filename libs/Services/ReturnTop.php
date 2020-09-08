@@ -4,7 +4,7 @@ require_once 'Services.php';
 
 class ReturnTop extends Services
 {
-    public static function header($plugin, $Path)
+    public static function header($plugin, $Path = Null)
     {
         // 获取配置信息
         $type = $plugin->ReturnTop;
@@ -16,7 +16,7 @@ class ReturnTop extends Services
         }
     }
 
-    public static function footer($plugin, $Path)
+    public static function footer($plugin, $Path = Null)
     {
         // 获取配置信息
         $type = $plugin->ReturnTop;

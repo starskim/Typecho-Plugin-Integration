@@ -6,7 +6,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
  *
  * @package Integration
  * @author Satrs_Kim
- * @version 1.4.0
+ * @version 1.5.0
  * @link https://blog.starskim.cn
  */
 
@@ -56,9 +56,9 @@ class Integration_Plugin implements Typecho_Plugin_Interface
             $sqlTemplate = file_get_contents(__DIR__ . '/sql/Install/SQLite.sql');
         }
 
-        if ($adapter === 'Pdo_Pgsql') {
-            $sqlTemplate = file_get_contents(__DIR__ . '/sql/Install/Pgsql.sql');
-        }
+//        if ($adapter === 'Pdo_Pgsql') {
+//            $sqlTemplate = file_get_contents(__DIR__ . '/sql/Install/Pgsql.sql');
+//        }
 
         if (empty($sqlTemplate)) throw new Exception('暂不支持你的数据库');
 
@@ -70,13 +70,12 @@ class Integration_Plugin implements Typecho_Plugin_Interface
     public static function addRoute()
     {
         Helper::addRoute('sitemap', '/sitemap.xml', 'Integration_Action', 'sitemap');
-        Helper::addPanel(1, self::$panel, 'Integration控制台', '查看蜘蛛日志', 'administrator');
+        Helper::addPanel(1, self::$panel, 'Integration控制台', 'Integration控制台', 'administrator');
         Helper::addRoute('baidu_sitemap_advanced', __TYPECHO_ADMIN_DIR__ . 'baidu_sitemap/advanced', 'Integration_Action', 'send_all');
     }
 
     public static function addFactory()
     {
-        Typecho_Plugin::factory('Widget_Archive')->header = array(__CLASS__, 'isbot');
         Typecho_Plugin::factory('Widget_Archive')->header = array(__CLASS__, 'header');
         Typecho_Plugin::factory('Widget_Archive')->footer = array(__CLASS__, 'footer');
         Typecho_Plugin::factory('Widget_Feedback')->comment = array(__CLASS__, 'filter');
@@ -145,40 +144,6 @@ class Integration_Plugin implements Typecho_Plugin_Interface
     {
     }
 
-    public static function isbot()
-    {
-        $config = Helper::options()->plugin('Integration');
-        $bot = NULL;
-        $botlist = $config->botlist;
-        if (sizeof($botlist) > 0) {
-            @ $useragent = strtolower($_SERVER['HTTP_USER_AGENT']);
-            foreach ($botlist as $value) {
-                if (strpos($useragent, $value) !== false) {
-                    $bot = $value;
-                }
-            }
-            if ($bot !== NULL) {
-                $request = new Typecho_Request;
-                $ip = $request->getIp();
-                $url = $_SERVER['REQUEST_URI'];
-                if ($ip == NULL) {
-                    $ip = 'UnKnow';
-                }
-                $options = Helper::options();
-                $timeStamp = $options->gmtTime;
-                $offset = $options->timezone - $options->serverTimezone;
-                $gtime = $timeStamp + $offset;
-                $db = Typecho_Db::get();
-                $rows = array(
-                    'bot' => $bot,
-                    'url' => $url,
-                    'ip' => $ip,
-                    'ltime' => $gtime,
-                );
-                $db->query($db->insert('table.robots_logs')->rows($rows));
-            }
-        }
-    }
 
     /**
      * 发布文章时自动提取标签

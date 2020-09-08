@@ -9,7 +9,7 @@ interface ServiceInterfaces
      * @param unknown header
      * @return unknown
      */
-    public static function header($plugin, $Path);
+    public static function header($plugin, $Path = Null);
 
     /**
      * 页脚输出相关代码
@@ -18,5 +18,5 @@ interface ServiceInterfaces
      * @param unknown footer
      * @return unknown
      */
-    public static function footer($plugin, $Path);
+    public static function footer($plugin, $Path = Null);
 }

@@ -3,52 +3,48 @@ error_reporting(E_ALL);
 include 'header.php';
 include 'menu.php';
 
-date_default_timezone_set('PRC');
-
 $_options = Helper::options();
 $_cfg = $_options->plugin('Integration');
 $_db = Typecho_Db::get();
 $_prefix = $_db->getPrefix();
-$stat = Typecho_Widget::widget('Widget_Stat');
-$current = $request->get('act', 'RobotsPlus');
-switch ($current) {
-    case "RobotsPlus":
-        $title = '查看蜘蛛日志';
-        break;
-    case "BaiduSubmit":
-        $title = '百度结构化日志';
-        break;
-}
+$current = $request->get('act');
 ?>
 
 <div class="main">
     <div class="body container">
-        <div class="typecho-page-title">
-            <h2><?= $title ?></h2>
-        </div>
+        <?php include 'page-title.php'; ?>
         <div class="row typecho-page-main" role="main">
-            <div class="col-mb-12">
-                <ul class="typecho-option-tabs fix-tabs clearfix">
-                    <li<?= ($current == 'RobotsPlus' ? ' class="current"' : '') ?>>
-                        <a href="<?php $_options->adminUrl('extending.php?panel=' . Integration_Plugin::$panel . '&act=RobotsPlus'); ?>">
-                            <?php _e('查看蜘蛛日志'); ?>
-                        </a>
-                    </li>
-                    <li<?= ($current == 'BaiduSubmit' ? ' class="current"' : '') ?>>
-                        <a href="<?php $_options->adminUrl('extending.php?panel=' . Integration_Plugin::$panel . '&act=BaiduSubmit'); ?>">
-                            <?php _e('百度结构化日志'); ?>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="<?php $_options->adminUrl('options-plugin.php?config=Integration') ?>">
-                            <?php _e('插件设置'); ?>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            <?php if ($current == 'RobotsPlus'):require_once 'RobotsPlus.php'; endif; ?>
-            <?php if ($current == 'BaiduSubmit'):require_once 'BaiduSubmit.php'; endif; ?>
-        </div>
+            <div class="col-mb-12 typecho-list">
+                <div class="clearfix">
+                    <ul class="typecho-option-tabs">
+                        <li<?php if (!isset($request->act) || 'RobotsPlus' == $current): ?> class="current"<?php endif; ?>>
+                            <a href="<?php $options->adminUrl('extending.php?panel=' . Integration_Plugin::$panel); ?>">
+                                <?php _e('查看蜘蛛日志'); ?>
+                            </a>
+                        </li>
+                        <li<?php if ('BaiduSubmit' == $current): ?> class="current"<?php endif; ?>>
+                            <a href="<?php $options->adminUrl('extending.php?panel=' . Integration_Plugin::$panel . '&act=BaiduSubmit'); ?>">
+                                <?php _e('百度结构化日志'); ?>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<?php $options->adminUrl('options-plugin.php?config=Integration'); ?>">
+                                <?php _e('插件设置'); ?>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <?php
+                if (!isset($request->act) || 'RobotsPlus' == $current){
+                    require_once 'RobotsPlus.php';
+                }elseif ('BaiduSubmit' == $current){
+                    require_once 'BaiduSubmit.php';
+                }
+                ?>
+
+            </div><!-- end .typecho-list -->
+        </div><!-- end .typecho-page-main -->
     </div>
 </div>
 
