@@ -20,7 +20,7 @@ class PanelConfig
     public static function config($form)
     {
         $Path = Helper::options()->pluginUrl . '/Integration/assets';
-        $isDelete = new Radio_integration('isDelete', [0 => '不删除', 1 => '删除'], 1, _t('卸载是否删除数据表'));
+        $isDelete = new Radio_integration('isDelete', [0 => '不删除', 1 => '删除'], 0, _t('卸载是否删除数据表'));
         echo <<<EOF
 <link href="https://cdn.bootcdn.net/ajax/libs/mdui/0.4.3/css/mdui.min.css" rel="stylesheet">
 <link href="$Path/css/admin.min.css" rel="stylesheet">

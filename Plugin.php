@@ -16,6 +16,9 @@ require_once 'libs/FooterConfig.php';
 
 class Integration_Plugin implements Typecho_Plugin_Interface
 {
+    /** @var string 提交路由前缀 */
+    public static $action = 'integration-edit';
+
     /** @var string 控制菜单链接 */
     public static $panel = 'Integration/page/Console.php';
 
@@ -70,6 +73,7 @@ class Integration_Plugin implements Typecho_Plugin_Interface
     public static function addRoute()
     {
         Helper::addRoute('sitemap', '/sitemap.xml', 'Integration_Action', 'sitemap');
+        Helper::addAction(self::$action, 'Integration_Action');
         Helper::addPanel(1, self::$panel, 'Integration控制台', 'Integration控制台', 'administrator');
         Helper::addRoute('baidu_sitemap_advanced', __TYPECHO_ADMIN_DIR__ . 'baidu_sitemap/advanced', 'Integration_Action', 'send_all');
     }
@@ -98,6 +102,7 @@ class Integration_Plugin implements Typecho_Plugin_Interface
 
     public static function removeRoute()
     {
+        Helper::removeAction(self::$action);
         Helper::removeRoute('sitemap');
         Helper::removeRoute('baidu_sitemap_advanced');
         Helper::removePanel(1, self::$panel);

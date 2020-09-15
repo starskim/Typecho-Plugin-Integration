@@ -3,11 +3,9 @@ error_reporting(E_ALL);
 include 'header.php';
 include 'menu.php';
 
-$_options = Helper::options();
-$_cfg = $_options->plugin('Integration');
-$_db = Typecho_Db::get();
-$_prefix = $_db->getPrefix();
 $current = $request->get('act');
+Typecho_Widget::widget('Integration_libs_Console_RobotsPlus')->to($RobotsPlus);
+Typecho_Widget::widget('Integration_libs_Console_BaiduSubmit')->to($BaiduSubmit);
 ?>
 
 <div class="main">
@@ -36,9 +34,9 @@ $current = $request->get('act');
                 </div>
 
                 <?php
-                if (!isset($request->act) || 'RobotsPlus' == $current){
+                if (!isset($request->act) || 'RobotsPlus' == $current) {
                     require_once 'RobotsPlus.php';
-                }elseif ('BaiduSubmit' == $current){
+                } elseif ('BaiduSubmit' == $current) {
                     require_once 'BaiduSubmit.php';
                 }
                 ?>
@@ -47,12 +45,76 @@ $current = $request->get('act');
         </div><!-- end .typecho-page-main -->
     </div>
 </div>
+<style>
+    .search-ip-group {
+        position: relative;
+        float: left;
+        margin-right: 10px;
+    }
 
+    .clear-search-ip {
+        background: #fff;
+        padding: 2px 7px;
+        position: absolute;
+        right: 0;
+        margin: 1px;
+    }
+
+    [id^="robots-log"] {
+        cursor: move;
+    }
+
+    .check-ip-location {
+        padding-left: 12px;
+        cursor: pointer;
+    }
+
+    .robotx-bot-name,
+    .robotx-ip {
+        cursor: pointer;
+    }
+</style>
 <?php
 include 'copyright.php';
 include 'common-js.php';
 include 'table-js.php';
 ?>
+<script>
+    function showIpLocation() {
+        $(".robotx-location").text("正在查询...");
+        $(".robotx-ip").each(function () {
+            var myd = $(this);
+            $.ajax({
+                url: "https://ip.huomao.com/ip?ip=" + myd.text(),
+                type: 'get',
+                dataType: 'json',
+                success: function (str) {
+                    data = eval(str);
+                    myd.next().text(data.country + data.province + data.city + data.isp).css("color", "#BD6800");
+                },
+                error: function (e) {
+                    myd.next().text("无该 IP 详细信息").css("color", "#f00");
+                }
+            });
+        });
+    }
+
+    $(document).ready(function () {
+        $(".check-ip-location").click(showIpLocation);
+        $(".robotx-ip").click(function () {
+            $('.search-ip').val($(this).data('ip'));
+            $('.search-btn').trigger('click');
+        });
+        $(".robotx-bot-name").click(function () {
+            $('.search-bot').val($(this).data('bot'));
+            $('.search-btn').trigger('click');
+        });
+        $(".clear-search-ip").click(function () {
+            $('.search-ip').val("");
+            $('.search-btn').trigger('click');
+        });
+    });
+</script>
 <script>
     $(function () {
         var show = $('.show-hide')
