@@ -20,11 +20,10 @@ class PanelConfig
     public static function config($form)
     {
         $Path = Helper::options()->pluginUrl . '/Integration/assets';
-        $isDelete = new Radio_integration('isDelete', [0 => '不删除', 1 => '删除'], 0, _t('卸载是否删除数据表'));
         echo <<<EOF
-<link href="https://cdn.bootcdn.net/ajax/libs/mdui/0.4.3/css/mdui.min.css" rel="stylesheet">
+<link href="https://cdn.bootcdn.net/ajax/libs/mdui/1.0.0/css/mdui.min.css" rel="stylesheet">
 <link href="$Path/css/admin.min.css" rel="stylesheet">
-<script src="https://cdn.bootcdn.net/ajax/libs/mdui/0.4.3/js/mdui.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/mdui/1.0.0/js/mdui.min.js"></script>
 <div class="mdui-card">
  <div class="mdui-progress">
  </div> 
@@ -55,16 +54,31 @@ class PanelConfig
 </div>
 EOF;
         $form->addItem(new Integration('<div class="mdui-panel" mdui-panel="">'));
-        $form->addInput($isDelete);
+        self::Console($form);
         self::RobotsPlus($form);
-        self::AutoTags($form);
+        self::BaiduSubmit($form);
         self::ReturnTop($form);
         self::ActivatePowerMode($form);
-        self::BaiduSubmit($form);
         self::HoerMouse($form, $Path);
         self::SmartSpam($form);
     }
 
+    private static function Console($form)
+    {
+        $list = [
+            'isDelete' => '删除数据表',
+            'AutoTags' => '自动标签',
+            'RobotsPlus' => '蛛来访日志',
+            'BaiduSubmit' => '百度结构化'
+        ];
+        $options = [
+            'isDelete',
+            'isActive'
+        ];
+
+        $Console = new Checkbox_integration('Console', $list, NULL, '控制台');
+        $form->addInput($Console);
+    }
 
     /**
      * 蛛来访日志配置面板
@@ -72,7 +86,7 @@ EOF;
      */
     private static function RobotsPlus($form)
     {
-        $options = array(
+        $list = [
             'baidu' => '百度',
             'google' => '谷歌',
             'sogou' => '搜狗',
@@ -81,8 +95,18 @@ EOF;
             'bing' => '必应',
             'yahoo' => '雅虎',
             '360' => '360搜索'
-        );
-        $botlist = new Checkbox_integration('botlist', $options, array('baidu', 'google', 'sogou', 'youdao', 'soso', 'bing', 'yahoo', '360'), '蜘蛛记录设置', '请选择要记录的蜘蛛日志');
+        ];
+        $options = [
+            'baidu',
+            'google',
+            'sogou',
+            'youdao',
+            'soso',
+            'bing',
+            'yahoo',
+            '360'
+        ];
+        $botlist = new Checkbox_integration('botlist', $list, $options, '蜘蛛记录设置', '请选择要记录的蜘蛛日志');
         $pagecount = new Text_integration('pagecount', NULL, '20', '分页数量', '每页显示的日志数量');
         $dbool = array(
             '0' => '删除',
@@ -95,13 +119,18 @@ EOF;
     }
 
     /**
-     * 自动标签配置面板
+     * 百度结构化配置面板
      * @param $form
      */
-    private static function AutoTags($form)
+    private static function BaiduSubmit($form)
     {
-        $isActive = new Radio_integration('isActive', array('1' => '是', '0' => '否',), '0', _t('自动标签'), _t('自动提取功能在文章已存在标签时不生效.'));
-        $form->addInput($isActive);
+        $form->addItem(new Title_Integration('百度结构化'));
+        $element = new Text_integration('api', null, null, _t('接口调用地址'), '请登录百度站长平台获取');
+        $form->addInput($element);
+
+        $element = new Text_integration('group', null, 15, _t('分组URL数'), '每天最多只能发送50条，请酌情设置');
+        $form->addInput($element);
+        $form->addItem(new EndSymbol_Integration(2));
     }
 
     /**
@@ -136,21 +165,6 @@ EOF;
     }
 
     /**
-     * 百度结构化配置面板
-     * @param $form
-     */
-    private static function BaiduSubmit($form)
-    {
-        $form->addItem(new Title_Integration('百度结构化'));
-        $element = new Text_integration('api', null, null, _t('接口调用地址'), '请登录百度站长平台获取');
-        $form->addInput($element);
-
-        $element = new Text_integration('group', null, 15, _t('分组URL数'), '每天最多只能发送50条，请酌情设置');
-        $form->addInput($element);
-        $form->addItem(new EndSymbol_Integration(2));
-    }
-
-    /**
      * 炫彩鼠标配置面板
      * @param $form
      */
@@ -170,7 +184,7 @@ EOF;
         $bubbleType = new Radio_integration('mouseType', $options, 'none', _t('鼠标样式'));
         $form->addInput($bubbleType);
 
-        $form->addItem(new Title_Integration('鼠标点击特效', '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;加载jQuery库、气泡类型、文字气泡、气泡颜色、气泡速度'));
+        $form->addItem(new Title_Integration('鼠标点击特效', '气泡类型、文字气泡、气泡颜色、气泡速度'));
         // 气泡类型
         $options = [
             'none' => _t('无'),
@@ -243,7 +257,7 @@ EOF;
             "<span style='color: #CF9E9E'>日文评论操作</span>", "如果评论中包含日文，则强行按该操作执行");
         $opt_nocn = new Radio_integration('opt_nocn', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
             "<span style='color: #CF9E9E'>非中文评论操作</span>", "如果评论中不包含中文，则强行按该操作执行");
-        $form->addItem(new Title_integration('评论拦截', '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;颜色区分（默认开启,自行配置）&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;作者：<a href="http://www.yovisun.com/archive/typecho-plugin-smartspam.html/" target="_blank"> Yovis Blog</a>'));
+        $form->addItem(new Title_integration('评论拦截', '颜色区分（默认开启,自行配置）作者：<a href="http://www.yovisun.com/archive/typecho-plugin-smartspam.html/" target="_blank"> Yovis Blog</a>'));
         $form->addInput($opt_length);
         $form->addInput($length_min);
         $form->addInput($length_max);

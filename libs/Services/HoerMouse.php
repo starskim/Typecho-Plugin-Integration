@@ -1,22 +1,7 @@
 <?php
 
-require_once 'Services.php';
-
 class HoerMouse extends Services
 {
-
-    /**
-     * 页头输出相关代码
-     *
-     * @access public
-     * @param unknown header
-     * @return unknown
-     */
-    public static function header($plugin, $Path = Null)
-    {
-        // TODO: Implement header() method.
-    }
-
     /**
      * 页脚输出相关代码
      *
@@ -24,16 +9,15 @@ class HoerMouse extends Services
      * @param unknown footer
      * @return unknown
      */
-    public static function footer($plugin, $Path = Null)
+    public function footer($plugin, $Path)
     {
         //点击爱心
         $arr = self::handleBubbleType($plugin, $Path);
         echo $arr['html'];
         echo $arr['js'];
-        echo "<script>console.log('%c 炫彩鼠标插件 https://gitee.com/HoeXhe/HoerMouse %c www.hoehub.com 😊 HoerMouse By Hoe ', 'font-family:\'Microsoft YaHei\',\'SF Pro Display\',Roboto,Noto,Arial,\'PingFang SC\',sans-serif;color:white;background:#ffa099;padding:5px 0;', 'font-family:\'Microsoft YaHei\',\'SF Pro Display\',Roboto,Noto,Arial,\'PingFang SC\',sans-serif;color:#ffa099;background:#404040;padding:5px 0;'); // 你能留下我的信息, 我会很高兴的 ^_^</script>";
     }
 
-    private static function handleBubbleType($HoerMouse, $Path)
+    private function handleBubbleType($HoerMouse, $Path)
     {
         $bubbleType = $HoerMouse->bubbleType;
         $dir = $Path . '/Integration/assets';

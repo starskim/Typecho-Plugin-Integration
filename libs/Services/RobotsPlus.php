@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Services.php';
-
 class RobotsPlus extends Services
 {
 
@@ -12,7 +10,7 @@ class RobotsPlus extends Services
      * @param unknown header
      * @return unknown
      */
-    public static function header($plugin, $Path = Null)
+    public function header($plugin)
     {
         $bot = NULL;
         $botlist = $plugin->botlist;
@@ -44,17 +42,5 @@ class RobotsPlus extends Services
                 $db->query($db->insert('table.robots_logs')->rows($rows));
             }
         }
-    }
-
-    /**
-     * 页脚输出相关代码
-     *
-     * @access public
-     * @param unknown footer
-     * @return unknown
-     */
-    public static function footer($plugin, $Path = Null)
-    {
-        // TODO: Implement footer() method.
     }
 }

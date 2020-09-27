@@ -15,7 +15,7 @@ Typecho_Widget::widget('Integration_libs_Console_BaiduSubmit')->to($BaiduSubmit)
             <div class="col-mb-12 typecho-list">
                 <div class="clearfix">
                     <ul class="typecho-option-tabs">
-                        <li<?php if (!isset($request->act) || 'RobotsPlus' == $current): ?> class="current"<?php endif; ?>>
+                        <li<?php if (!isset($request->act)): ?> class="current"<?php endif; ?>>
                             <a href="<?php $options->adminUrl('extending.php?panel=' . Integration_Plugin::$panel); ?>">
                                 <?php _e('查看蜘蛛日志'); ?>
                             </a>
@@ -34,7 +34,8 @@ Typecho_Widget::widget('Integration_libs_Console_BaiduSubmit')->to($BaiduSubmit)
                 </div>
 
                 <?php
-                if (!isset($request->act) || 'RobotsPlus' == $current) {
+
+                if (!isset($request->act)) {
                     require_once 'RobotsPlus.php';
                 } elseif ('BaiduSubmit' == $current) {
                     require_once 'BaiduSubmit.php';

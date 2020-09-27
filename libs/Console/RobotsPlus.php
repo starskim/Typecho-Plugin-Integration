@@ -1,38 +1,13 @@
 <?php
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 
-class Integration_libs_Console_RobotsPlus extends Typecho_Widget
+class Integration_libs_Console_RobotsPlus extends Integration_libs_Console_Services
 {
-
-    protected $options;
-
-    protected $plugin;
-
-    protected $db;
-
     private $_countSql;
 
     private $_total = false;
 
     private $_currentPage;
-
-    public function __construct($request, $response, $params = NULL)
-    {
-        parent::__construct($request, $response, $params);
-
-        /** 初始化数据库 */
-        $this->db = Typecho_Db::get();
-
-        /** 初始化常用组件 */
-        $this->options = $this->widget('Widget_Options');
-        $this->plugin = $this->options->plugin('Integration');
-    }
-
-    public function push(array $value)
-    {
-        $value = $this->filter($value);
-        return parent::push($value);
-    }
 
     public function filter(array $value)
     {

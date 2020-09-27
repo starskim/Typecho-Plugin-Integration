@@ -2,19 +2,23 @@
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 
 /**
- * <strong style="color:#56a0e0;">Stars Kim'blog 整合功能插件</strong>
+ * <strong style="color:#66ccff;">Stars Kim'blog 整合功能插件</strong>
  *
  * @package Integration
  * @author Satrs_Kim
- * @version 1.6.0
+ * @version 1.7.0
  * @link https://blog.starskim.cn
  */
 
+define('INTEGRATION_VERSION', '1.7.0');
+
+require_once 'libs/Services.php';
 require_once 'libs/PanelConfig.php';
 require_once 'libs/HeaderConfig.php';
 require_once 'libs/FooterConfig.php';
+require_once 'libs/Services/AutoTags.php';
 
-class Integration_Plugin implements Typecho_Plugin_Interface
+class Integration_Plugin extends Services implements Typecho_Plugin_Interface
 {
     /** @var string 提交路由前缀 */
     public static $action = 'integration-edit';
@@ -94,7 +98,7 @@ class Integration_Plugin implements Typecho_Plugin_Interface
     {
         self::removeRoute();
         $config = Helper::options()->plugin('Integration');
-        if ($config->isDelete == 1) {
+        if (self::exist_value('isDelete', $config->Console)) {
             $meg = self::removeTable();
         }
         return _t($meg);
@@ -149,14 +153,13 @@ class Integration_Plugin implements Typecho_Plugin_Interface
     {
     }
 
-
     /**
      * 发布文章时自动提取标签
      *
      * @access public
      * @return void
      */
-    public static function write($contents, $edit)
+    public static function write($contents)
     {
         $html = $contents['text'];
         $isMarkdown = (0 === strpos($html, '<!--markdown-->'));
@@ -167,7 +170,7 @@ class Integration_Plugin implements Typecho_Plugin_Interface
         $options = Helper::options();
         $autoTags = $options->plugin('Integration');
         //插件启用,且未手动设置标签
-        if ($autoTags->isActive == 1 && !$contents['tags']) {
+        if (self::exist_value('AutoTags', $autoTags->Console) && !$contents['tags']) {
             Typecho_Widget::widget('Widget_Metas_Tag_Admin')->to($tags);
             foreach ($tags->stack as $tag) {
                 $tagNames[] = $tag['name'];
@@ -232,7 +235,6 @@ class Integration_Plugin implements Typecho_Plugin_Interface
     public static function header()
     {
         headerConfig::header();
-
     }
 
     /**
@@ -256,35 +258,7 @@ class Integration_Plugin implements Typecho_Plugin_Interface
      */
     public static function pfooter()
     {
-        $options = Helper::options();
-        $config = $options->plugin('Integration');
-        $Path = $options->pluginUrl . '/Integration/';
-        $Js = $Path . 'assets/js';
-        $activeineditor = $config->activeineditor;
-        if ($activeineditor) {
-            $colorful = $config->colorful;
-            $shake = $config->shake;
-            if ($colorful || $shake) {
-                $jsUrl = $Js . '/activate-power-mode.js';
-                printf("<script type='text/javascript' src='%s'></script>\n", $jsUrl); // 加载JS库
-                $colorful = $colorful ? $colorful[0] : 'false';
-                $shake = $shake ? $shake[0] : 'false';
-                echo "<script type='text/javascript'>
-                    $(function() {
-                        try {
-                            (function(){
-                                // input
-                                POWERMODE.colorful = {$colorful}; // make power mode colorful 颜色
-                                POWERMODE.shake = {$shake}; // turn off shake 振动
-                                document.body.addEventListener('input', POWERMODE);
-                            })();
-                        } catch (e) {
-                            console.log('打字特效插件出现错误');
-                        }
-                    });
-                    </script>\n";
-            }
-        }
+        footerConfig::pfooter();
     }
 
     /**
