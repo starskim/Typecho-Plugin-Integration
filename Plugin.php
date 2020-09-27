@@ -16,7 +16,6 @@ require_once 'libs/Services.php';
 require_once 'libs/PanelConfig.php';
 require_once 'libs/HeaderConfig.php';
 require_once 'libs/FooterConfig.php';
-require_once 'libs/Services/AutoTags.php';
 
 class Integration_Plugin extends Services implements Typecho_Plugin_Interface
 {

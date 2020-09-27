@@ -28,7 +28,7 @@ class headerConfig extends Services
     {
         ?>
         <script type="text/javascript">
-            window['LocalConst'] = {
+            window['Integration_LocalConst'] = {
                 Integration_VERSION: '<?php echo INTEGRATION_VERSION ?>'
 
             }
