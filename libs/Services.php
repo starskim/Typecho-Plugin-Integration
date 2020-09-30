@@ -30,7 +30,7 @@ class Services
             define("BLOG_URL", $options->rootUrl);
         }
         if (strlen(trim($config->LocalResourceSrc)) > 0) {//主题静态资源的绝对地址
-            @define('Integration_STATIC_PATH', $options->LocalResourceSrc);
+            @define('Integration_STATIC_PATH', $config->LocalResourceSrc);
         } else {
             @define('Integration_STATIC_PATH', Integration_URL . '/Integration/assets/');
         }
