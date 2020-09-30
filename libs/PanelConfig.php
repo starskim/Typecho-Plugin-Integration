@@ -57,7 +57,7 @@ EOF;
         $layout = new Typecho_Widget_Helper_Layout();
         $layout->html(_t('<h4>基本配置:</h4><hr>'));
         $form->addItem($layout);
-//        self::PrettifyStyle($form);
+        self::PrettifyStyle($form);
         self::ActivatePowerMode($form);
         self::HoerMouse($form, $Path);
 
@@ -77,9 +77,9 @@ EOF;
 
     private static function PrettifyStyle($form)
     {
-        $form->addItem(new Title_Integration('主题美化'));
-        self::Generalfunction($form);
-        self::handsome($form);
+        $form->addItem(new Title_Integration('主题美化','其他功能开发中'));
+//        self::Generalfunction($form);
+//        self::handsome($form);
         // 是否启用了pjax
         $pjax = new Radio_integration('pjax', array('0' => _t('是'), '1' => _t('否'),), '1', _t('是否启用了PJAX'), _t('如果你启用了pjax，函数将会每次在pjax回调内执行。如果没启用，函数将在页面加载完时执行一次。<b style="color:#f23232">如果你不懂此选项的含义，请跟着handsome主题是否设置了pjax来设置此选项。</b>'));
         $form->addInput($pjax);
