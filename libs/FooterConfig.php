@@ -17,11 +17,10 @@ class footerConfig extends Services
     {
         $options = Helper::options();
         $config = $options->plugin('Integration');
-        $PluginPath = $options->pluginUrl . '/Integration/assets/';
-        echo '<script type="text/javascript" src="' . $PluginPath . 'js/Integration.js"></script>';
-        ReturnTop::footer($config, $PluginPath);
-        ActivatePowerMode::footer($config, $PluginPath);
-        HoerMouse::footer($config, $PluginPath);
+        echo '<script type="text/javascript" src="' . Integration_STATIC_PATH . 'js/Integration.js"></script>';
+        ReturnTop::footer($config);
+        ActivatePowerMode::footer($config);
+        HoerMouse::footer($config);
     }
 
     /**
@@ -35,7 +34,6 @@ class footerConfig extends Services
     {
         $options = Helper::options();
         $config = $options->plugin('Integration');
-        $PluginPath = $options->pluginUrl . '/Integration/assets/';
-        ActivatePowerMode::pfooter($config, $PluginPath);
+        ActivatePowerMode::pfooter($config);
     }
 }

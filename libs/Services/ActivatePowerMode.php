@@ -2,12 +2,12 @@
 
 class ActivatePowerMode extends Services
 {
-    public function footer($plugin, $Path)
+    public function footer($plugin)
     {
         $colorful = $plugin->colorful;
         $shake = $plugin->shake;
         if ($colorful || $shake) {
-            $jsUrl = $Path . 'js/activate-power-mode.js';
+            $jsUrl = Integration_STATIC_PATH . 'js/activate-power-mode.js';
             printf("<script type='text/javascript' src='%s'></script>\n", $jsUrl); // 加载JS库
             $colorful = $colorful ? $colorful[0] : 'false';
             $shake = $shake ? $shake[0] : 'false';
@@ -28,14 +28,14 @@ class ActivatePowerMode extends Services
         }
     }
 
-    public function pfooter($plugin, $Path)
+    public function pfooter($plugin)
     {
         $activeineditor = $plugin->activeineditor;
         if ($activeineditor) {
             $colorful = $plugin->colorful;
             $shake = $plugin->shake;
             if ($colorful || $shake) {
-                $jsUrl = $Path . 'js/activate-power-mode.js';
+                $jsUrl = Integration_STATIC_PATH . 'js/activate-power-mode.js';
                 printf("<script type='text/javascript' src='%s'></script>\n", $jsUrl); // 加载JS库
                 $colorful = $colorful ? $colorful[0] : 'false';
                 $shake = $shake ? $shake[0] : 'false';

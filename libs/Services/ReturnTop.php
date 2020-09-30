@@ -2,31 +2,31 @@
 
 class ReturnTop extends Services
 {
-    public function header($plugin, $Path)
+    public function header($plugin)
     {
         // 获取配置信息
         $type = $plugin->ReturnTop;
 
         if ($type == 1) {
-            echo '<link rel="stylesheet" type="text/css" href="' . $Path . 'css/top.css" />';
+            echo '<link rel="stylesheet" type="text/css" href="' . Integration_STATIC_PATH . 'css/top.css" />';
         } elseif ($type == 2) {
-            echo '<link rel="stylesheet" type="text/css" href="' . $Path . 'css/szgotop.css" />';
+            echo '<link rel="stylesheet" type="text/css" href="' . Integration_STATIC_PATH . 'css/szgotop.css" />';
         }
     }
 
-    public function footer($plugin, $Path)
+    public function footer($plugin)
     {
         // 获取配置信息
         $type = $plugin->ReturnTop;
 
         if ($type == 1) {
             echo '<div id="updown"><div class="sidebar_wo" id="leimu">
-	        <img src="' . $Path . 'images/leimuA.png" alt="雷姆" onmouseover="this.src=\'' . $Path . 'images/leimuB.png\'" onmouseout="this.src=\'' . $Path . 'images/leimuA.png\'" id="audioBtn"></div>
-	        <div class="sidebar_wo" id="lamu"><img src="' . $Path . 'images/lamuA.png" alt="雷姆" onmouseover="this.src=\'' . $Path . 'images/lamuB.png\'" onmouseout="this.src=\'' . $Path . 'images/lamuA.png\'" id="audioBtn"></div>
-	        <script type="text/javascript" src="' . $Path . 'js/top.js"></script>';
+	        <img src="' . Integration_STATIC_PATH . 'images/leimuA.png" alt="雷姆" onmouseover="this.src=\'' . Integration_STATIC_PATH . 'images/leimuB.png\'" onmouseout="this.src=\'' . Integration_STATIC_PATH . 'images/leimuA.png\'" id="audioBtn"></div>
+	        <div class="sidebar_wo" id="lamu"><img src="' . Integration_STATIC_PATH . 'images/lamuA.png" alt="雷姆" onmouseover="this.src=\'' . Integration_STATIC_PATH . 'images/lamuB.png\'" onmouseout="this.src=\'' . Integration_STATIC_PATH . 'images/lamuA.png\'" id="audioBtn"></div>
+	        <script type="text/javascript" src="' . Integration_STATIC_PATH . 'js/top.js"></script>';
         } elseif ($type == 2) {
             echo '<div class="back-to-top cd-top faa-float animated cd-is-visible" style="top: -900px;"></div>
-            <script type="text/javascript" src="' . $Path . 'js/szgotop.js"></script>';
+            <script type="text/javascript" src="' . Integration_STATIC_PATH . 'js/szgotop.js"></script>';
         }
     }
 }

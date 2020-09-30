@@ -1,5 +1,6 @@
 <?php
 
+require_once 'Services/LocalConst.php';
 require_once 'Services/RobotsPlus.php';
 require_once 'Services/ReturnTop.php';
 
@@ -14,26 +15,15 @@ class headerConfig extends Services
      */
     public function header()
     {
+        self::init();
         $options = Helper::options();
         $config = $options->plugin('Integration');
-        $PluginPath = $options->pluginUrl . '/Integration/assets/';
-        self::LocalConst();
-        echo '<link rel="stylesheet" type="text/css" href="' . $PluginPath . 'css/Integration.css" />';
-        RobotsPlus::header($config);
-        ReturnTop::header($config, $PluginPath);
-
-    }
-
-    public function LocalConst()
-    {
-        ?>
-        <script type="text/javascript">
-            window['Integration_LocalConst'] = {
-                Integration_VERSION: '<?php echo INTEGRATION_VERSION ?>'
-
-            }
-        </script>
-        <?php
+        if (self::exist_value('RobotsPlus', $config->Console)) {
+            RobotsPlus::header($config);
+        }
+        LocalConst::header($config);
+        echo '<link rel="stylesheet" type="text/css" href="' . Integration_STATIC_PATH . 'css/Integration.css" />';
+        ReturnTop::header($config);
 
     }
 }

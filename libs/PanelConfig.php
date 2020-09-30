@@ -54,98 +54,60 @@ class PanelConfig
 </div>
 EOF;
         $form->addItem(new Integration('<div class="mdui-panel" mdui-panel="">'));
+        $layout = new Typecho_Widget_Helper_Layout();
+        $layout->html(_t('<h4>基本配置:</h4><hr>'));
+        $form->addItem($layout);
+//        self::PrettifyStyle($form);
+        self::ActivatePowerMode($form);
+        self::HoerMouse($form, $Path);
+
+        //二、增强配置
+        $layout = new Typecho_Widget_Helper_Layout();
+        $layout->html(_t('<h4>增强配置:</h4><hr>'));
+        $form->addItem($layout);
         self::Console($form);
         self::RobotsPlus($form);
         self::BaiduSubmit($form);
         self::ReturnTop($form);
-        self::ActivatePowerMode($form);
-        self::HoerMouse($form, $Path);
         self::SmartSpam($form);
+        self::LocalResourceSrc($form);
+
+
     }
 
-    private static function Console($form)
+    private static function PrettifyStyle($form)
+    {
+        $form->addItem(new Title_Integration('主题美化'));
+        self::Generalfunction($form);
+        self::handsome($form);
+        // 是否启用了pjax
+        $pjax = new Radio_integration('pjax', array('0' => _t('是'), '1' => _t('否'),), '1', _t('是否启用了PJAX'), _t('如果你启用了pjax，函数将会每次在pjax回调内执行。如果没启用，函数将在页面加载完时执行一次。<b style="color:#f23232">如果你不懂此选项的含义，请跟着handsome主题是否设置了pjax来设置此选项。</b>'));
+        $form->addInput($pjax);
+        $form->addItem(new EndSymbol_Integration(2));
+
+    }
+
+    private static function Generalfunction($form)
     {
         $list = [
-            'isDelete' => '删除数据表',
-            'AutoTags' => '自动标签',
-            'RobotsPlus' => '蛛来访日志',
-            'BaiduSubmit' => '百度结构化'
+            'moeTitle' => _t('标题卖萌'),
+
         ];
         $options = [
-            'isDelete',
-            'isActive'
         ];
-
-        $Console = new Checkbox_integration('Console', $list, NULL, '控制台');
-        $form->addInput($Console);
+        $General = new Checkbox_integration('General', $list, $options, '通用功能');
+        $form->addInput($General);
     }
 
-    /**
-     * 蛛来访日志配置面板
-     * @param $form
-     */
-    private static function RobotsPlus($form)
+    private static function handsome($form)
     {
         $list = [
-            'baidu' => '百度',
-            'google' => '谷歌',
-            'sogou' => '搜狗',
-            'youdao' => '有道',
-            'soso' => '搜搜',
-            'bing' => '必应',
-            'yahoo' => '雅虎',
-            '360' => '360搜索'
         ];
         $options = [
-            'baidu',
-            'google',
-            'sogou',
-            'youdao',
-            'soso',
-            'bing',
-            'yahoo',
-            '360'
         ];
-        $botlist = new Checkbox_integration('botlist', $list, $options, '蜘蛛记录设置', '请选择要记录的蜘蛛日志');
-        $pagecount = new Text_integration('pagecount', NULL, '20', '分页数量', '每页显示的日志数量');
-        $dbool = array(
-            '0' => '删除',
-            '1' => '不删除'
-        );
-        $form->addItem(new Title_Integration('蛛来访日志'));
-        $form->addInput($botlist);
-        $form->addInput($pagecount);
-        $form->addItem(new EndSymbol_Integration(2));
-    }
+        $handsome = new Checkbox_integration('handsome', $list, $options, 'Handsome功能', 'handsome主题专属功能，只适用handsome主题');
+        $form->addInput($handsome);
 
-    /**
-     * 百度结构化配置面板
-     * @param $form
-     */
-    private static function BaiduSubmit($form)
-    {
-        $form->addItem(new Title_Integration('百度结构化'));
-        $element = new Text_integration('api', null, null, _t('接口调用地址'), '请登录百度站长平台获取');
-        $form->addInput($element);
-
-        $element = new Text_integration('group', null, 15, _t('分组URL数'), '每天最多只能发送50条，请酌情设置');
-        $form->addInput($element);
-        $form->addItem(new EndSymbol_Integration(2));
-    }
-
-    /**
-     * 返回顶部配置面板
-     * @param $form
-     */
-    private static function ReturnTop($form)
-    {
-        $list = [
-            '0' => '关闭',
-            '1' => '拉姆雷姆',
-            '2' => '夏目的喵'
-        ];
-        $Result = new Radio_integration('ReturnTop', $list, '0', _t('返回顶部'), _t('这是两个很萌的返回顶部控件'));
-        $form->addInput($Result);
     }
 
     /**
@@ -207,6 +169,91 @@ EOF;
         $bubbleSpeed = new Text_integration('bubbleSpeed', null, _t('3000'), _t('文字气泡速度'), _t('如果选择文字气泡类型, 请填写气泡速度 默认3秒'));
         $form->addInput($bubbleSpeed);
         $form->addItem(new EndSymbol_Integration(2));
+    }
+
+    private static function Console($form)
+    {
+        $list = [
+            'isDelete' => '删除数据表',
+            'AutoTags' => '自动标签',
+            'RobotsPlus' => '蛛来访日志',
+            'BaiduSubmit' => '百度结构化',
+            'SmartSpam' => '评论拦截'
+        ];
+        $options = [
+            'RobotsPlus'
+        ];
+
+        $Console = new Checkbox_integration('Console', $list, $options, '控制台');
+        $form->addInput($Console);
+    }
+
+    /**
+     * 蛛来访日志配置面板
+     * @param $form
+     */
+    private static function RobotsPlus($form)
+    {
+        $list = [
+            'baidu' => '百度',
+            'google' => '谷歌',
+            'sogou' => '搜狗',
+            'youdao' => '有道',
+            'soso' => '搜搜',
+            'bing' => '必应',
+            'yahoo' => '雅虎',
+            '360' => '360搜索'
+        ];
+        $options = [
+            'baidu',
+            'google',
+            'sogou',
+            'youdao',
+            'soso',
+            'bing',
+            'yahoo',
+            '360'
+        ];
+        $botlist = new Checkbox_integration('botlist', $list, $options, '蜘蛛记录设置', '请选择要记录的蜘蛛日志');
+        $pagecount = new Text_integration('pagecount', NULL, '20', '分页数量', '每页显示的日志数量');
+        $dbool = array(
+            '0' => '删除',
+            '1' => '不删除'
+        );
+        $form->addItem(new Title_Integration(_t('蛛来访日志'), _t('请在控制台设置 默认：启动')));
+        $form->addInput($botlist);
+        $form->addInput($pagecount);
+        $form->addItem(new EndSymbol_Integration(2));
+    }
+
+    /**
+     * 百度结构化配置面板
+     * @param $form
+     */
+    private static function BaiduSubmit($form)
+    {
+        $form->addItem(new Title_Integration(_t('百度结构化'), _t('请在控制台设置 默认：禁用')));
+        $element = new Text_integration('api', null, null, _t('接口调用地址'), '请登录百度站长平台获取');
+        $form->addInput($element);
+
+        $element = new Text_integration('group', null, 15, _t('分组URL数'), '每天最多只能发送50条，请酌情设置');
+        $form->addInput($element);
+        $form->addItem(new EndSymbol_Integration(2));
+    }
+
+    /**
+     * 返回顶部配置面板
+     * @param $form
+     */
+    private static function ReturnTop($form)
+    {
+        $list = [
+            '0' => '关闭',
+            '1' => '拉姆雷姆',
+            '2' => '夏目的喵'
+        ];
+        $Result = new Radio_integration('ReturnTop', $list, '0', _t('返回顶部'), _t('这是两个很萌的返回顶部控件'));
+        $form->addInput($Result);
     }
 
     /**
@@ -282,5 +329,14 @@ EOF;
         $form->addInput($opt_nojp);
         $form->addInput($opt_nocn);
         $form->addItem(new EndSymbol_integration(2));
+    }
+
+    private static function LocalResourceSrc($form)
+    {
+        $LocalResourceSrc = new Text_integration('LocalResourceSrc', NULL, NULL, _t(' 云加速CDN'), _t('使用该项设置前，你必须有自己搭建的cdn服务器（不是指当前服务器）</br> 插件目录下的<code>/assets/</code>目录下有 
+<code>css、js、images</code>四个静态资源文件夹。</br>你需要把<code>assets</code>目录上传到你的cdn服务器上，比如CDN服务器的 
+<code>Integration目录</code>里，地址即为 
+<code>https://cdn.starskim.com/Integration/assets/</code></br>在当前框中就填入该地址，插件就会引用你搭建的cdn上面的资源，而不再引用当前服务器上的资源'));
+        $form->addInput($LocalResourceSrc);
     }
 }

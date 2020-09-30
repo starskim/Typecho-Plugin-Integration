@@ -9,18 +9,18 @@ class HoerMouse extends Services
      * @param unknown footer
      * @return unknown
      */
-    public function footer($plugin, $Path)
+    public function footer($plugin)
     {
         //点击爱心
-        $arr = self::handleBubbleType($plugin, $Path);
+        $arr = self::handleBubbleType($plugin);
         echo $arr['html'];
         echo $arr['js'];
     }
 
-    private function handleBubbleType($HoerMouse, $Path)
+    private function handleBubbleType($HoerMouse)
     {
         $bubbleType = $HoerMouse->bubbleType;
-        $dir = $Path . '/Integration/assets';
+        $dir = Integration_STATIC_PATH . '/Integration/assets';
         $js = '';
         $html = '';
         switch ($bubbleType) {

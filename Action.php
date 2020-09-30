@@ -108,8 +108,9 @@ class Integration_Action extends Typecho_Widget implements Widget_Interface_Do
     public function post($url, $group = null)
     {
         $options = Helper::options();
+        $config = $options->plugin('Integration');
         //获取API
-        $api = $options->plugin('Integration')->api;
+        $api = $config->api;
         //准备数据
         if (is_array($url)) {
             $urls = $url;
@@ -174,34 +175,51 @@ class Integration_Action extends Typecho_Widget implements Widget_Interface_Do
         }
         //获取系统配置
         $options = Helper::options();
-        //判断是否配置好API
-        if (is_null($options->plugin('Integration')->api)) {
-            throw new Typecho_Plugin_Exception(_t('api未配置'));
+        $config = $options->plugin('Integration');
+        if (self::exist_value('BaiduSubmit', $config->Console)) {
+            //判断是否配置好API
+            if (isset($config->api)) {
+                throw new Typecho_Plugin_Exception(_t('api未配置'));
+            }
+            //获取文章类型
+            $type = $contents['type'];
+            //获取路由信息
+            $routeExists = (NULL != Typecho_Router::get($type));
+            if (!is_null($routeExists)) {
+                $db = Typecho_Db::get();
+                $contents['cid'] = $class->cid;
+                $contents['categories'] = $db->fetchAll($db->select()->from('table.metas')
+                    ->join('table.relationships', 'table.relationships.mid = table.metas.mid')
+                    ->where('table.relationships.cid = ?', $contents['cid'])
+                    ->where('table.metas.type = ?', 'category')
+                    ->order('table.metas.order', Typecho_Db::SORT_ASC));
+                $contents['category'] = urlencode(current(Typecho_Common::arrayFlatten($contents['categories'], 'slug')));
+                $contents['slug'] = urlencode($contents['slug']);
+                $contents['date'] = new Typecho_Date($contents['created']);
+                $contents['year'] = $contents['date']->year;
+                $contents['month'] = $contents['date']->month;
+                $contents['day'] = $contents['date']->day;
+            }
+            //生成永久连接
+            $path_info = $routeExists ? Typecho_Router::url($type, $contents) : '#';
+            $permalink = Typecho_Common::url($path_info, $options->index);
+            //调用post方法
+            self::post($permalink);
         }
-        //获取文章类型
-        $type = $contents['type'];
-        //获取路由信息
-        $routeExists = (NULL != Typecho_Router::get($type));
-        if (!is_null($routeExists)) {
-            $db = Typecho_Db::get();
-            $contents['cid'] = $class->cid;
-            $contents['categories'] = $db->fetchAll($db->select()->from('table.metas')
-                ->join('table.relationships', 'table.relationships.mid = table.metas.mid')
-                ->where('table.relationships.cid = ?', $contents['cid'])
-                ->where('table.metas.type = ?', 'category')
-                ->order('table.metas.order', Typecho_Db::SORT_ASC));
-            $contents['category'] = urlencode(current(Typecho_Common::arrayFlatten($contents['categories'], 'slug')));
-            $contents['slug'] = urlencode($contents['slug']);
-            $contents['date'] = new Typecho_Date($contents['created']);
-            $contents['year'] = $contents['date']->year;
-            $contents['month'] = $contents['date']->month;
-            $contents['day'] = $contents['date']->day;
+    }
+
+    /**
+     * 判断值是否有效存在
+     * @access public
+     * @param $value
+     * @return 返回bool类型
+     */
+    public function exist_value($value, $array, $type = null)
+    {
+        if (isset($array)) {
+            return in_array($value, $array, $type);
         }
-        //生成永久连接
-        $path_info = $routeExists ? Typecho_Router::url($type, $contents) : '#';
-        $permalink = Typecho_Common::url($path_info, $options->index);
-        //调用post方法
-        self::post($permalink);
+        return false;
     }
 
     public function sitemap()
