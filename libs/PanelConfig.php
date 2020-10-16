@@ -119,14 +119,14 @@ EOF;
             "AvatarRotation." => _t("头像转动"),
             "AvatarCrazyRotation." => _t("头像疯狂转动"),
             "AvatarBreathingLight." => _t("头像呼吸灯"),
-            "colorfulIcon." => _t("彩色图标"),
-            "colorfulTags." => _t("彩色标签云及数字"),
             "HS_Copy." => _t('复制提醒'),
             "HS_InboundWelcome." => _t('入站欢迎'),
             "HS_InboundWelcome2." => _t('入站欢迎（定位）'),
             "TotalVisit." => _t('访问总数'),
             "ResponseTime." => _t('响应耗时'),
             "CommentPunch." => _t('评论打卡'),
+            "colorfulIcon." => _t("彩色图标"),
+            "colorfulTags." => _t("彩色标签云及数字"),
 //            "" => _t(''),
         ];
         $options = [
