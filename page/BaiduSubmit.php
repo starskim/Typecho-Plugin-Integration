@@ -1,5 +1,5 @@
 <div class="typecho-list-operate clearfix">
-    <form action="<?php  $options->adminUrl('baidu_sitemap/advanced'); ?>" method="post">
+    <form action="<?php $options->adminUrl('baidu_sitemap/advanced'); ?>" method="post">
         <div class="operate">
             <select name="group">
                 <?php $BaiduSubmit->group_num() ?>

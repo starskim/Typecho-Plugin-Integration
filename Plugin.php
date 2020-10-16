@@ -6,7 +6,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
  *
  * @package Integration
  * @author Satrs_Kim
- * @version 1.8.0
+ * @version 1.9.0
  * @link https://blog.starskim.cn
  */
 
@@ -21,7 +21,7 @@ require_once 'libs/Services/SmartSpam.php';
 class Integration_Plugin extends Services implements Typecho_Plugin_Interface
 {
     /** @var string 提交路由前缀 */
-    public static $action = 'integration-edit';
+    public static $action = 'Integration-edit';
 
     /** @var string 控制菜单链接 */
     public static $panel = 'Integration/page/Console.php';
@@ -84,11 +84,10 @@ class Integration_Plugin extends Services implements Typecho_Plugin_Interface
 
     public static function addFactory()
     {
+        Typecho_Plugin::factory('admin/menu.php')->navBar = array(__CLASS__, 'render');
         Typecho_Plugin::factory('Widget_Archive')->header = array(__CLASS__, 'header');
         Typecho_Plugin::factory('Widget_Archive')->footer = array(__CLASS__, 'footer');
         Typecho_Plugin::factory('Widget_Feedback')->comment = array(__CLASS__, 'filter');
-        Typecho_Plugin::factory('admin/write-post.php')->bottom = array(__CLASS__, 'pfooter');
-        Typecho_Plugin::factory('admin/write-page.php')->bottom = array(__CLASS__, 'pfooter');
         Typecho_Plugin::factory('Widget_Contents_Post_Edit')->write = array(__CLASS__, 'write');
         Typecho_Plugin::factory('Widget_Contents_Post_Edit')->finishPublish = array('Integration_Action', 'send');
         Typecho_Plugin::factory('Widget_Contents_Page_Edit')->finishPublish = array('Integration_Action', 'send');
@@ -154,6 +153,24 @@ class Integration_Plugin extends Services implements Typecho_Plugin_Interface
     }
 
     /**
+     * 插件实现方法
+     *
+     * @access public
+     * @return void
+     */
+    public static function render()
+    {
+        echo '
+            <a href="options-plugin.php?config=Integration" id="Integration">Integration插件管理</a>
+            <script>
+                window.onload = function () {
+                    $("#Integration").attr("target","_self");
+                }
+            </script>
+        ';
+    }
+
+    /**
      * 发布文章时自动提取标签
      *
      * @access public
@@ -189,18 +206,6 @@ class Integration_Plugin extends Services implements Typecho_Plugin_Interface
     }
 
     /**
-     * 页脚输出相关代码
-     *
-     * @access public
-     * @param unknown pfooter
-     * @return unknown
-     */
-    public static function pfooter()
-    {
-        footerConfig::pfooter();
-    }
-
-    /**
      * 评论过滤器
      *
      */
@@ -210,5 +215,6 @@ class Integration_Plugin extends Services implements Typecho_Plugin_Interface
         if (self::exist_value('SmartSpam', $config->Console)) {
             return SmartSpam::filter($comment);
         }
+        return $comment;
     }
 }

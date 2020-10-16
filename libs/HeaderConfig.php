@@ -1,5 +1,6 @@
 <?php
 
+require_once 'Services/Handsomes.php';
 require_once 'Services/LocalConst.php';
 require_once 'Services/RobotsPlus.php';
 require_once 'Services/ReturnTop.php';
@@ -22,7 +23,11 @@ class headerConfig extends Services
             RobotsPlus::header($config);
         }
         LocalConst::header($config);
-        echo '<link rel="stylesheet" type="text/css" href="' . Integration_STATIC_PATH . 'css/Integration.css" />';
+        echo "<link rel='stylesheet' type='text/css' href='" . INTEGRATION_STATIC_PATH . "css/General.css' />\n";
+        if (self::GetTheme() == 'handsome') {
+            Handsomes::Pjax($config);
+            echo "<link rel='stylesheet' type='text/css' href='" . INTEGRATION_STATIC_PATH . "css/handsome.css' />\n";
+        }
         ReturnTop::header($config);
 
     }

@@ -178,7 +178,7 @@ class Integration_Action extends Typecho_Widget implements Widget_Interface_Do
         $config = $options->plugin('Integration');
         if (self::exist_value('BaiduSubmit', $config->Console)) {
             //判断是否配置好API
-            if (isset($config->api)) {
+            if (is_null($config->api)) {
                 throw new Typecho_Plugin_Exception(_t('api未配置'));
             }
             //获取文章类型

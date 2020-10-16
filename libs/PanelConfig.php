@@ -8,7 +8,7 @@ require_once 'Forms/Radio_Integration.php';
 require_once 'Forms/Select_Integration.php';
 require_once 'Forms/Textarea_Integration.php';
 
-class PanelConfig
+class PanelConfig extends Services
 {
     /**
      * 获取插件配置面板
@@ -54,6 +54,7 @@ class PanelConfig
 </div>
 EOF;
         $form->addItem(new Integration('<div class="mdui-panel" mdui-panel="">'));
+        //一、基本配置
         $layout = new Typecho_Widget_Helper_Layout();
         $layout->html(_t('<h4>基本配置:</h4><hr>'));
         $form->addItem($layout);
@@ -77,12 +78,11 @@ EOF;
 
     private static function PrettifyStyle($form)
     {
-        $form->addItem(new Title_Integration('主题美化','其他功能开发中'));
-//        self::Generalfunction($form);
-//        self::handsome($form);
-        // 是否启用了pjax
-        $pjax = new Radio_integration('pjax', array('0' => _t('是'), '1' => _t('否'),), '1', _t('是否启用了PJAX'), _t('如果你启用了pjax，函数将会每次在pjax回调内执行。如果没启用，函数将在页面加载完时执行一次。<b style="color:#f23232">如果你不懂此选项的含义，请跟着handsome主题是否设置了pjax来设置此选项。</b>'));
-        $form->addInput($pjax);
+        $form->addItem(new Title_Integration(_t('主题美化'), _t('功能开发中')));
+        self::Generalfunction($form);
+        if (self::GetTheme() == 'handsome') {
+            self::handsome($form);
+        }
         $form->addItem(new EndSymbol_Integration(2));
 
     }
@@ -90,23 +90,55 @@ EOF;
     private static function Generalfunction($form)
     {
         $list = [
-            'moeTitle' => _t('标题卖萌'),
-
+            "MoeTitle." => _t("标题卖萌"),
+            "TextBan." => _t('文字禁止选中'),
+            "PicturesBan." => _t('图片禁止拖动'),
+            "PicturesLight." => _t('图片呼吸灯'),
+            "Copy." => _t('复制提醒'),
+            "Copy2." => _t('复制提醒2'),
+            "Copy3." => _t('复制提醒3'),
+            "PlayRemind." => _t('播放提醒'),
+            "InboundWelcome." => _t('入站欢迎'),
+            "InboundWelcome2." => _t('入站欢迎（定位）'),
+            "MySSL." => _t("MySSL安全认证签章"),
+            "BanF12." => _t(" 禁用F12"),
+            "BanDeBug." => _t("禁止调试"),
         ];
         $options = [
         ];
-        $General = new Checkbox_integration('General', $list, $options, '通用功能');
+        $General = new Checkbox_Integration('General', $list, $options, _t('通用功能'));
         $form->addInput($General);
     }
 
     private static function handsome($form)
     {
         $list = [
+            "TransparentStyle." => _t("透明样式"),
+            "BoxModel." => _t("盒子模型"),
+            "TitleCentered." => _t("标题居中"),
+            "AvatarRotation." => _t("头像转动"),
+            "AvatarCrazyRotation." => _t("头像疯狂转动"),
+            "AvatarBreathingLight." => _t("头像呼吸灯"),
+            "colorfulIcon." => _t("彩色图标"),
+            "colorfulTags." => _t("彩色标签云及数字"),
+            "HS_Copy." => _t('复制提醒'),
+            "HS_InboundWelcome." => _t('入站欢迎'),
+            "HS_InboundWelcome2." => _t('入站欢迎（定位）'),
+            "TotalVisit." => _t('访问总数'),
+            "ResponseTime." => _t('响应耗时'),
+            "CommentPunch." => _t('评论打卡'),
+//            "" => _t(''),
         ];
         $options = [
         ];
-        $handsome = new Checkbox_integration('handsome', $list, $options, 'Handsome功能', 'handsome主题专属功能，只适用handsome主题');
+        $handsome = new Checkbox_Integration('handsome', $list, $options, 'Handsome功能', 'handsome主题专属功能，只适用handsome主题');
+        // 右下角版权样式
+        $copyrightType = new Radio_Integration('copyrightType', ['0' => _t('美化样式'), '1' => _t('文本样式'),], '0', _t('右下角版权样式'));
+        // 是否启用了pjax
+        $pjax = new Radio_Integration('pjax', array(true => _t('是'), false => _t('否'),), true, _t('是否启用了PJAX'), _t('如果你启用了pjax，函数将会每次在pjax回调内执行。如果没启用，函数将在页面加载完时执行一次。<b style="color:#f23232">如果你不懂此选项的含义，请跟着handsome主题是否设置了pjax来设置此选项。</b>'));
         $form->addInput($handsome);
+        $form->addInput($copyrightType);
+        $form->addInput($pjax);
 
     }
 
@@ -116,14 +148,15 @@ EOF;
      */
     private static function ActivatePowerMode($form)
     {
-        $activeineditor = new Radio_integration('activeineditor', ['0' => _t('不启用'), '1' => _t('启用')], '1', _t('是否在后台启用'), _t('选择是否在文章与页面编辑界面启用本插件。'));
-        $colorful = new Checkbox_integration('colorful', ['true' => _t('颜色效果')], ['true'], _t('开启颜色效果'));
-        $shake = new Checkbox_integration('shake', ['true' => _t('振动效果')], ['true'], _t('开启振动效果'));
-        $form->addItem(new Title_Integration('打字特效'));
-        $form->addInput($activeineditor);
-        $form->addInput($colorful);
-        $form->addInput($shake);
-        $form->addItem(new EndSymbol_Integration(2));
+        $list = [
+            "colorful" => _t("颜色效果"),
+            "shake" => _t("振动效果"),
+        ];
+        $options = [
+            "colorful",
+        ];
+        $ActivatePowerMode = new Checkbox_Integration('ActivatePowerMode', $list, $options, '打字特效');
+        $form->addInput($ActivatePowerMode);
     }
 
     /**
@@ -143,10 +176,10 @@ EOF;
             'sketch' => "<img src='{$Path}/images/sketch/normal.cur'><img src='{$Path}/images/sketch/link.cur'>",
             'star' => "<img src='{$Path}/images/star/normal.cur'><img src='{$Path}/images/star/link.cur'>",
         ];
-        $bubbleType = new Radio_integration('mouseType', $options, 'none', _t('鼠标样式'));
+        $bubbleType = new Radio_Integration('mouseType', $options, 'none', _t('鼠标样式'));
         $form->addInput($bubbleType);
 
-        $form->addItem(new Title_Integration('鼠标点击特效', '气泡类型、文字气泡、气泡颜色、气泡速度'));
+        $form->addItem(new Title_Integration(_t('鼠标点击特效'), _t('气泡类型、文字气泡、气泡颜色、气泡速度')));
         // 气泡类型
         $options = [
             'none' => _t('无'),
@@ -154,19 +187,19 @@ EOF;
             'heart' => _t('爱心气泡'),
             'fireworks' => _t('fireworks+anime喷墨气泡'),
         ];
-        $bubbleType = new Radio_integration('bubbleType', $options, 'none', _t('气泡类型'));
+        $bubbleType = new Radio_Integration('bubbleType', $options, 'none', _t('气泡类型'));
         $form->addInput($bubbleType);
 
         // 气泡文字
-        $bubbleText = new Text_integration('bubbleText', null, _t('欢迎来到我的小站!'), _t('文字气泡填写'), _t('如果选择文字气泡类型, 请填写文字'));
+        $bubbleText = new Text_Integration('bubbleText', null, _t('富强-民主-文明-和谐-自由-平等-公正-法治-爱国-敬业-诚信-友善'), _t('文字气泡填写'), _t('如果选择文字气泡类型，请填写文字，并以 - 分隔'));
         $form->addInput($bubbleText);
 
         // 气泡颜色
-        $bubbleColor = new Text_integration('bubbleColor', null, _t('随机'), _t('文字气泡颜色'), _t('如果选择文字气泡类型, 请填写气泡颜色, 可填入"随机"或十六进制颜色值 如#2db4d8'));
+        $bubbleColor = new Text_Integration('bubbleColor', null, _t('随机'), _t('文字气泡颜色'), _t('如果选择文字气泡类型, 请填写气泡颜色, 可填入"随机"或十六进制颜色值 如#2db4d8'));
         $form->addInput($bubbleColor);
 
         // 气泡速度
-        $bubbleSpeed = new Text_integration('bubbleSpeed', null, _t('3000'), _t('文字气泡速度'), _t('如果选择文字气泡类型, 请填写气泡速度 默认3秒'));
+        $bubbleSpeed = new Text_Integration('bubbleSpeed', null, _t('3000'), _t('文字气泡速度'), _t('如果选择文字气泡类型, 请填写气泡速度 默认3秒'));
         $form->addInput($bubbleSpeed);
         $form->addItem(new EndSymbol_Integration(2));
     }
@@ -184,7 +217,7 @@ EOF;
             'RobotsPlus'
         ];
 
-        $Console = new Checkbox_integration('Console', $list, $options, '控制台');
+        $Console = new Checkbox_Integration('Console', $list, $options, _t('控制台'));
         $form->addInput($Console);
     }
 
@@ -195,14 +228,14 @@ EOF;
     private static function RobotsPlus($form)
     {
         $list = [
-            'baidu' => '百度',
-            'google' => '谷歌',
-            'sogou' => '搜狗',
-            'youdao' => '有道',
-            'soso' => '搜搜',
-            'bing' => '必应',
-            'yahoo' => '雅虎',
-            '360' => '360搜索'
+            'baidu' => _t('百度'),
+            'google' => _t('谷歌'),
+            'sogou' => _t('搜狗'),
+            'youdao' => _t('有道'),
+            'soso' => _t('搜搜'),
+            'bing' => _t('必应'),
+            'yahoo' => _t('雅虎'),
+            '360' => _t('360搜索')
         ];
         $options = [
             'baidu',
@@ -214,12 +247,8 @@ EOF;
             'yahoo',
             '360'
         ];
-        $botlist = new Checkbox_integration('botlist', $list, $options, '蜘蛛记录设置', '请选择要记录的蜘蛛日志');
-        $pagecount = new Text_integration('pagecount', NULL, '20', '分页数量', '每页显示的日志数量');
-        $dbool = array(
-            '0' => '删除',
-            '1' => '不删除'
-        );
+        $botlist = new Checkbox_Integration('botlist', $list, $options, _t('蜘蛛记录设置'), _t('请选择要记录的蜘蛛日志'));
+        $pagecount = new Text_Integration('pagecount', NULL, '20', _t('分页数量'), _t('每页显示的日志数量'));
         $form->addItem(new Title_Integration(_t('蛛来访日志'), _t('请在控制台设置 默认：启动')));
         $form->addInput($botlist);
         $form->addInput($pagecount);
@@ -233,10 +262,10 @@ EOF;
     private static function BaiduSubmit($form)
     {
         $form->addItem(new Title_Integration(_t('百度结构化'), _t('请在控制台设置 默认：禁用')));
-        $element = new Text_integration('api', null, null, _t('接口调用地址'), '请登录百度站长平台获取');
+        $element = new Text_Integration('api', null, null, _t('接口调用地址'), '请登录百度站长平台获取');
         $form->addInput($element);
 
-        $element = new Text_integration('group', null, 15, _t('分组URL数'), '每天最多只能发送50条，请酌情设置');
+        $element = new Text_Integration('group', null, 15, _t('分组URL数'), '每天最多只能发送50条，请酌情设置');
         $form->addInput($element);
         $form->addItem(new EndSymbol_Integration(2));
     }
@@ -252,7 +281,7 @@ EOF;
             '1' => '拉姆雷姆',
             '2' => '夏目的喵'
         ];
-        $Result = new Radio_integration('ReturnTop', $list, '0', _t('返回顶部'), _t('这是两个很萌的返回顶部控件'));
+        $Result = new Radio_Integration('ReturnTop', $list, '0', _t('返回顶部'), _t('这是两个很萌的返回顶部控件'));
         $form->addInput($Result);
     }
 
@@ -262,49 +291,49 @@ EOF;
      */
     private static function SmartSpam($form)
     {
-        $opt_length = new Radio_integration('opt_length', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
+        $opt_length = new Radio_Integration('opt_length', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
             "<span style='color: #de1cc6'>评论字符长度操作</span>", "如果评论中长度不符合条件，则强行按该操作执行。如果选择[无动作]，将忽略下面长度的设置");
-        $length_min = new Text_integration('length_min', NULL, '1', "<span style='color: #de1cc6'>最短字符</span>", '允许评论的最短字符数。');
-        $length_max = new Text_integration('length_max', NULL, '200', "<span style='color: #de1cc6'>最长字符</span>", '允许评论的最长字符数');
-        $opt_ban = new Radio_integration('opt_ban', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
+        $length_min = new Text_Integration('length_min', NULL, '1', "<span style='color: #de1cc6'>最短字符</span>", '允许评论的最短字符数。');
+        $length_max = new Text_Integration('length_max', NULL, '200', "<span style='color: #de1cc6'>最长字符</span>", '允许评论的最长字符数');
+        $opt_ban = new Radio_Integration('opt_ban', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
             "<span style='color: #FF0000'>禁止词汇操作</span>", "如果评论中包含禁止词汇列表中的词汇，将执行该操作");
-        $words_ban = new Textarea_integration('words_ban', NULL, "傻逼\n操你妈\n智障\n傻子",
+        $words_ban = new Textarea_Integration('words_ban', NULL, "傻逼\n操你妈\n智障\n傻子",
             "<span style='color: #FF0000'>禁止词汇表</span>", _t('多条词汇请用换行符隔开'));
-        $opt_chk = new Radio_integration('opt_chk', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
+        $opt_chk = new Radio_Integration('opt_chk', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
             "<span style='color: #FF9797'>敏感词汇操作</span>", "如果评论中包含敏感词汇列表中的词汇，将执行该操作");
-        $words_chk = new Textarea_integration('words_chk', NULL, "http://",
+        $words_chk = new Textarea_Integration('words_chk', NULL, "http://",
             "<span style='color: #FF9797'>敏感词汇表</span>", _t('多条词汇请用换行符隔开<br />注意：如果词汇同时出现于禁止词汇，则执行禁止词汇操作'));
-        $opt_au_length = new Radio_integration('opt_au_length', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
+        $opt_au_length = new Radio_Integration('opt_au_length', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
             "<span style='color: #FF44FF'>昵称字符长度操作</span>", "如果昵称长度不符合条件，则强行按该操作执行。如果选择[无动作]，将忽略下面长度的设置");
-        $au_length_min = new Text_integration('au_length_min', NULL, '1', "<span style='color: #FF44FF'>昵称最短字符数</span>", '昵称允许的最短字符数。');
-        $au_length_max = new Text_integration('au_length_max', NULL, '20', "<span style='color: #FF44FF'>昵称最长字符数</span>", '昵称允许的最长字符数');
-        $opt_nojp_au = new Radio_integration('opt_nojp_au', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
+        $au_length_min = new Text_Integration('au_length_min', NULL, '1', "<span style='color: #FF44FF'>昵称最短字符数</span>", '昵称允许的最短字符数。');
+        $au_length_max = new Text_Integration('au_length_max', NULL, '20', "<span style='color: #FF44FF'>昵称最长字符数</span>", '昵称允许的最长字符数');
+        $opt_nojp_au = new Radio_Integration('opt_nojp_au', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
             "<span style='color: #84C1FF'>昵称日文操作</span>", "如果用户昵称中包含日文，则强行按该操作执行");
-        $opt_nourl_au = new Radio_integration('opt_nourl_au', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
+        $opt_nourl_au = new Radio_Integration('opt_nourl_au', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
             "<span style='color: #0072E3'>昵称网址操作</span>", "如果用户昵称是网址，则强行按该操作执行");
-        $opt_au = new Radio_integration('opt_au', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
+        $opt_au = new Radio_Integration('opt_au', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
             "<span style='color: #B15BFF'>屏蔽昵称关键词操作</span>", "如果评论发布者的昵称含有该关键词，将执行该操作");
-        $words_au = new Textarea_integration('words_au', NULL, "",
+        $words_au = new Textarea_Integration('words_au', NULL, "",
             "<span style='color: #B15BFF'>屏蔽昵称关键词表</span>", _t('多个关键词请用换行符隔开'));
-        $opt_ip = new Radio_integration('opt_ip', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
+        $opt_ip = new Radio_Integration('opt_ip', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
             "<span style='color: #FF5809'>屏蔽IP操作</span>", "如果评论发布者的IP在屏蔽IP段，将执行该操作");
-        $words_ip = new Textarea_integration('words_ip', NULL, "0.0.0.0",
+        $words_ip = new Textarea_Integration('words_ip', NULL, "0.0.0.0",
             "<span style='color: #FF5809'>屏蔽IP</span>", _t('多条IP请用换行符隔开<br />支持用*号匹配IP段，如：192.168.*.*'));
-        $opt_mail = new Radio_integration('opt_mail', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
+        $opt_mail = new Radio_Integration('opt_mail', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
             "<span style='color: #4F9D9D'>屏蔽邮箱操作</span>", "如果评论发布者的邮箱与禁止的一致，将执行该操作");
-        $words_mail = new Textarea_integration('words_mail', NULL, "",
+        $words_mail = new Textarea_Integration('words_mail', NULL, "",
             "<span style='color: #4F9D9D'>邮箱关键词</span>", _t('多个邮箱请用换行符隔开<br />可以是邮箱的全部，或者邮箱部分关键词'));
-        $opt_url = new Radio_integration('opt_url', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
+        $opt_url = new Radio_Integration('opt_url', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
             "<span style='color: #AFAF61'>屏蔽网址操作</span>", "如果评论发布者的网址与禁止的一致，将执行该操作。如果网址为空，该项不会起作用。");
-        $words_url = new Textarea_integration('words_url', NULL, "",
+        $words_url = new Textarea_Integration('words_url', NULL, "",
             "<span style='color: #AFAF61'>网址关键词</span>", _t('多个网址请用换行符隔开<br />可以是网址的全部，或者网址部分关键词。如果网址为空，该项不会起作用。'));
-        $opt_title = new Radio_integration('opt_title', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
+        $opt_title = new Radio_Integration('opt_title', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
             "<span style='color: #743A3A'>内容含有文章标题</span>", "如果评论内容中含有本页面的文章标题，则强行按该操作执行");
-        $opt_nojp = new Radio_integration('opt_nojp', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
+        $opt_nojp = new Radio_Integration('opt_nojp', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
             "<span style='color: #CF9E9E'>日文评论操作</span>", "如果评论中包含日文，则强行按该操作执行");
-        $opt_nocn = new Radio_integration('opt_nocn', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
+        $opt_nocn = new Radio_Integration('opt_nocn', array("none" => "无动作", "waiting" => "标记为待审核", "spam" => "标记为垃圾", "abandon" => "评论失败"), "waiting",
             "<span style='color: #CF9E9E'>非中文评论操作</span>", "如果评论中不包含中文，则强行按该操作执行");
-        $form->addItem(new Title_integration('评论拦截', '颜色区分（默认开启,自行配置）作者：<a href="http://www.yovisun.com/archive/typecho-plugin-smartspam.html/" target="_blank"> Yovis Blog</a>'));
+        $form->addItem(new Title_Integration('评论拦截', '颜色区分（默认开启,自行配置）作者：<a href="http://www.yovisun.com/archive/typecho-plugin-smartspam.html/" target="_blank"> Yovis Blog</a>'));
         $form->addInput($opt_length);
         $form->addInput($length_min);
         $form->addInput($length_max);
@@ -328,12 +357,12 @@ EOF;
         $form->addInput($opt_title);
         $form->addInput($opt_nojp);
         $form->addInput($opt_nocn);
-        $form->addItem(new EndSymbol_integration(2));
+        $form->addItem(new EndSymbol_Integration(2));
     }
 
     private static function LocalResourceSrc($form)
     {
-        $LocalResourceSrc = new Text_integration('LocalResourceSrc', NULL, NULL, _t(' 云加速CDN'), _t('使用该项设置前，你必须有自己搭建的cdn服务器（不是指当前服务器）</br> 插件目录下的<code>/assets/</code>目录下有 
+        $LocalResourceSrc = new Text_Integration('LocalResourceSrc', NULL, NULL, _t(' 云加速CDN'), _t('使用该项设置前，你必须有自己搭建的cdn服务器（不是指当前服务器）</br> 插件目录下的<code>/assets/</code>目录下有 
 <code>css、js、images</code>四个静态资源文件夹。</br>你需要把<code>assets</code>目录上传到你的cdn服务器上，比如CDN服务器的 
 <code>Integration目录</code>里，地址即为 
 <code>https://cdn.starskim.com/Integration/assets/</code></br>在当前框中就填入该地址，插件就会引用你搭建的cdn上面的资源，而不再引用当前服务器上的资源'));

@@ -19,7 +19,7 @@
                 <ul class="dropdown-menu">
                     <li>
                         <a lang="<?php _e('您确认要删除这些日志吗?'); ?>"
-                           href="<?php $security->index('/action/integration-edit?do=delete'); ?>">
+                           href="<?php $security->index('/action/Integration-edit?do=delete'); ?>">
                             <?php _e('删除'); ?>
                         </a>
                     </li>
@@ -114,7 +114,7 @@
                 </button>
                 <ul class="dropdown-menu">
                     <li><a lang="<?php _e('您确认要删除这些日志吗?'); ?>"
-                           href="<?php $security->index('/action/integration-edit?do=delete'); ?>"><?php _e('删除'); ?></a>
+                           href="<?php $security->index('/action/Integration-edit?do=delete'); ?>"><?php _e('删除'); ?></a>
                     </li>
                 </ul>
             </div>

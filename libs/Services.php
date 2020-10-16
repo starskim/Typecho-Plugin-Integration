@@ -19,20 +19,28 @@ class Services
         return false;
     }
 
+    public static function GetTheme()
+    {
+        $db = Typecho_Db::get();
+        $query = $db->select('table.options.value')->from('table.options')->where('table.options.name = ?', 'theme');
+        $theme = $db->fetchAll($query);
+        return $theme[0]['value'];
+    }
+
     public static function init()
     {
         $options = Helper::options();
         $config = $options->plugin('Integration');
-        if (!defined('Integration_URL')) {//主题目录的绝对地址
-            define("Integration_URL", $options->pluginUrl);
+        if (!defined('INTEGRATION_URL')) {//主题目录的绝对地址
+            define("INTEGRATION_URL", $options->pluginUrl);
         }
         if (!defined("BLOG_URL")) {
             define("BLOG_URL", $options->rootUrl);
         }
         if (strlen(trim($config->LocalResourceSrc)) > 0) {//主题静态资源的绝对地址
-            @define('Integration_STATIC_PATH', $config->LocalResourceSrc);
+            @define('INTEGRATION_STATIC_PATH', $config->LocalResourceSrc);
         } else {
-            @define('Integration_STATIC_PATH', Integration_URL . '/Integration/assets/');
+            @define('INTEGRATION_STATIC_PATH', INTEGRATION_URL . '/Integration/assets/');
         }
     }
 }
