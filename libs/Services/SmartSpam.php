@@ -5,7 +5,11 @@ class SmartSpam
 {
     /**
      * 评论过滤器
-     *
+     * @param $comment
+     * @return mixed
+     * @throws Typecho_Db_Exception
+     * @throws Typecho_Plugin_Exception
+     * @throws Typecho_Widget_Exception
      */
     public static function filter($comment)
     {
@@ -28,57 +32,43 @@ class SmartSpam
 
 
         //屏蔽IP段处理
-        if ($opt == "none" && $filter_set->opt_ip != "none") {
-            if (self::check_ip($filter_set->words_ip, $comment['ip'])) {
-                $error = "评论发布者的IP已被管理员屏蔽";
-                $opt = $filter_set->opt_ip;
-            }
+        if ($opt == "none" && $filter_set->opt_ip != "none" && self::check_ip($filter_set->words_ip, $comment['ip'])) {
+            $error = "评论发布者的IP已被管理员屏蔽";
+            $opt = $filter_set->opt_ip;
         }
 
 
         //屏蔽邮箱处理
-        if ($opt == "none" && $filter_set->opt_mail != "none") {
-            if (self::check_in($filter_set->words_mail, $comment['mail'])) {
-                $error = "评论发布者的邮箱地址被管理员屏蔽";
-                $opt = $filter_set->opt_mail;
-            }
+        if ($opt == "none" && $filter_set->opt_mail != "none" && self::check_in($filter_set->words_mail, $comment['mail'])) {
+            $error = "评论发布者的邮箱地址被管理员屏蔽";
+            $opt = $filter_set->opt_mail;
         }
 
         //屏蔽网址处理
-        if (!empty($filter_set->words_url)) {
-            if ($opt == "none" && $filter_set->opt_url != "none") {
-                if (self::check_in($filter_set->words_url, $comment['url'])) {
-                    $error = "评论发布者的网址被管理员屏蔽";
-                    $opt = $filter_set->opt_url;
-                }
-            }
+        if (!empty($filter_set->words_url) && $opt == "none" && $filter_set->opt_url != "none" && self::check_in($filter_set->words_url, $comment['url'])) {
+            $error = "评论发布者的网址被管理员屏蔽";
+            $opt = $filter_set->opt_url;
         }
 
 
         //屏蔽昵称关键词处理
-        if ($opt == "none" && $filter_set->opt_au != "none") {
-            if (self::check_in($filter_set->words_au, $comment['author'])) {
-                $error = "对不起，昵称的部分字符已经被管理员屏蔽，请更换";
-                $opt = $filter_set->opt_au;
-            }
+        if ($opt == "none" && $filter_set->opt_au != "none" && self::check_in($filter_set->words_au, $comment['author'])) {
+            $error = "对不起，昵称的部分字符已经被管理员屏蔽，请更换";
+            $opt = $filter_set->opt_au;
         }
 
 
         //日文评论处理
-        if ($opt == "none" && $filter_set->opt_nojp != "none") {
-            if (preg_match("/[\x{3040}-\x{31ff}]/u", $comment['text']) > 0) {
-                $error = "禁止使用日文";
-                $opt = $filter_set->opt_nojp;
-            }
+        if ($opt == "none" && $filter_set->opt_nojp != "none" && preg_match("/[\x{3040}-\x{31ff}]/u", $comment['text']) > 0) {
+            $error = "禁止使用日文";
+            $opt = $filter_set->opt_nojp;
         }
 
 
         //日文用户昵称处理
-        if ($opt == "none" && $filter_set->opt_nojp_au != "none") {
-            if (preg_match("/[\x{3040}-\x{31ff}]/u", $comment['author']) > 0) {
-                $error = "用户昵称禁止使用日文";
-                $opt = $filter_set->opt_nojp_au;
-            }
+        if ($opt == "none" && $filter_set->opt_nojp_au != "none" && preg_match("/[\x{3040}-\x{31ff}]/u", $comment['author']) > 0) {
+            $error = "用户昵称禁止使用日文";
+            $opt = $filter_set->opt_nojp_au;
         }
 
 
@@ -87,29 +77,24 @@ class SmartSpam
             if (self::strLength($comment['author']) < $filter_set->au_length_min) {
                 $error = "昵称请不得少于" . $filter_set->au_length_min . "个字符";
                 $opt = $filter_set->opt_au_length;
-            } else
-                if (self::strLength($comment['author']) > $filter_set->au_length_max) {
-                    $error = "昵称请不得多于" . $filter_set->au_length_max . "个字符";
-                    $opt = $filter_set->opt_au_length;
-                }
+            } elseif (self::strLength($comment['author']) > $filter_set->au_length_max) {
+                $error = "昵称请不得多于" . $filter_set->au_length_max . "个字符";
+                $opt = $filter_set->opt_au_length;
+            }
 
         }
 
         //用户昵称网址判断处理
-        if ($opt == "none" && $filter_set->opt_nourl_au != "none") {
-            if (preg_match(" /^((https?|ftp|news):\/\/)?([a-z]([a-z0-9\-]*[\.。])+([a-z]{2}|aero|arpa|biz|com|coop|edu|gov|info|int|jobs|mil|museum|name|nato|net|org|pro|travel)|(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))(\/[a-z0-9_\-\.~]+)*(\/([a-z0-9_\-\.]*)(\?[a-z0-9+_\-\.%=&]*)?)?(#[a-z][a-z0-9_]*)?$/ ", $comment['author']) > 0) {
-                $error = "用户昵称不允许为网址";
-                $opt = $filter_set->opt_nourl_au;
-            }
+        if ($opt == "none" && $filter_set->opt_nourl_au != "none" && preg_match(' /^((https?|ftp|news):\\/\\/)?([a-z]([a-z0-9\\-]*[\\.。])+([a-z]{2}|aero|arpa|biz|com|coop|edu|gov|info|int|jobs|mil|museum|name|nato|net|org|pro|travel)|(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))(\\/[a-z0-9_\\-\\.~]+)*(\\/([a-z0-9_\\-\\.]*)(\\?[a-z0-9+_\\-\\.%=&]*)?)?(#[a-z][a-z0-9_]*)?$/ ', $comment['author']) > 0) {
+            $error = "用户昵称不允许为网址";
+            $opt = $filter_set->opt_nourl_au;
         }
 
 
         //纯中文评论处理
-        if ($opt == "none" && $filter_set->opt_nocn != "none") {
-            if (preg_match("/[\x{4e00}-\x{9fa5}]/u", $comment['text']) == 0) {
-                $error = "评论内容请不少于一个中文汉字";
-                $opt = $filter_set->opt_nocn;
-            }
+        if ($opt == "none" && $filter_set->opt_nocn != "none" && preg_match("/[\x{4e00}-\x{9fa5}]/u", $comment['text']) == 0) {
+            $error = "评论内容请不少于一个中文汉字";
+            $opt = $filter_set->opt_nocn;
         }
 
 
@@ -127,18 +112,14 @@ class SmartSpam
         }
 
         //检查禁止词汇
-        if ($opt == "none" && $filter_set->opt_ban != "none") {
-            if (self::check_in($filter_set->words_ban, $comment['text'])) {
-                $error = "评论内容中包含禁止词汇";
-                $opt = $filter_set->opt_ban;
-            }
+        if ($opt == "none" && $filter_set->opt_ban != "none" && self::check_in($filter_set->words_ban, $comment['text'])) {
+            $error = "评论内容中包含禁止词汇";
+            $opt = $filter_set->opt_ban;
         }
         //检查敏感词汇
-        if ($opt == "none" && $filter_set->opt_chk != "none") {
-            if (self::check_in($filter_set->words_chk, $comment['text'])) {
-                $error = "评论内容中包含敏感词汇";
-                $opt = $filter_set->opt_chk;
-            }
+        if ($opt == "none" && $filter_set->opt_chk != "none" && self::check_in($filter_set->words_chk, $comment['text'])) {
+            $error = "评论内容中包含敏感词汇";
+            $opt = $filter_set->opt_chk;
         }
 
         //执行操作
@@ -156,7 +137,9 @@ class SmartSpam
 
     /**
      * 检查$ip中是否在$words_ip的IP段中
-     *
+     * @param $words_ip
+     * @param $ip
+     * @return bool
      */
     private static function check_ip($words_ip, $ip)
     {
@@ -171,10 +154,8 @@ class SmartSpam
                 if (preg_match($word, $ip)) {
                     return true;
                 }
-            } else {
-                if (false !== strpos($ip, $word)) {
-                    return true;
-                }
+            } elseif (false !== strpos($ip, $word)) {
+                return true;
             }
         }
         return false;
@@ -182,7 +163,9 @@ class SmartSpam
 
     /**
      * 检查$str中是否含有$words_str中的词汇
-     *
+     * @param $words_str
+     * @param $str
+     * @return bool
      */
     private static function check_in($words_str, $str)
     {
@@ -200,6 +183,8 @@ class SmartSpam
 
     /**
      * PHP获取字符串中英文混合长度
+     * @param $str
+     * @return int
      */
     private static function strLength($str)
     {

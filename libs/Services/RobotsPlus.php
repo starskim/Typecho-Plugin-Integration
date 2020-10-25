@@ -33,12 +33,12 @@ class RobotsPlus extends Services
                 $offset = $options->timezone - $options->serverTimezone;
                 $gtime = $timeStamp + $offset;
                 $db = Typecho_Db::get();
-                $rows = array(
+                $rows = [
                     'bot' => $bot,
                     'url' => $url,
                     'ip' => $ip,
                     'ltime' => $gtime,
-                );
+                ];
                 $db->query($db->insert('table.robots_logs')->rows($rows));
             }
         }

@@ -21,19 +21,15 @@ class Handsomes extends Services
     public function Pjax($plugin)
     {
         $options = Helper::options();
-        if ($plugin->pjax) {
-            //访问总数
-            if (self::exist_value('TotalVisit.', $plugin->handsome)) {
-                $options->ChangeAction .= "TotalVisit()";
-            }
-            //响应耗时
-            if (self::exist_value('ResponseTime.', $plugin->handsome)) {
-                $options->ChangeAction .= "ResponseTime()";
-            }
-            //彩色标签云及数字
-            if (self::exist_value('colorfulTags.', $plugin->handsome)) {
-                $options->ChangeAction .= "colorfulTags()";
-            }
-        }
+        //访问总数
+        if (self::exist_value('TotalVisit.', $plugin->handsome)) $options->ChangeAction .= "\nTotalVisit();";
+        //响应耗时
+        if (self::exist_value('ResponseTime.', $plugin->handsome)) $options->ChangeAction .= "\nResponseTime();domTime();";
+        //彩色标签云及数字
+        if (self::exist_value('ColorfulTags.', $plugin->handsome)) $options->ChangeAction .= "\nColorfulTags();";
+        //评论打卡
+        if (self::exist_value('CommentPunch.', $plugin->handsome)) $options->ChangeAction .= "\nCommentPunch();";
+        //P站每日热门
+        if (self::exist_value('Pixiv.', $plugin->handsome)) $options->ChangeAction .= "\nPixiv();";
     }
 }

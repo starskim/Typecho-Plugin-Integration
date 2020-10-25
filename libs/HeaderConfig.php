@@ -11,8 +11,8 @@ class headerConfig extends Services
      * 页头输出相关代码
      *
      * @access public
-     * @param unknown header
-     * @return unknown
+     * @return void
+     * @throws Typecho_Plugin_Exception
      */
     public function header()
     {
@@ -20,15 +20,15 @@ class headerConfig extends Services
         $options = Helper::options();
         $config = $options->plugin('Integration');
         if (self::exist_value('RobotsPlus', $config->Console)) {
-            RobotsPlus::header($config);
+            (new RobotsPlus)->header($config);
         }
-        LocalConst::header($config);
+        (new LocalConst)->header($config);
         echo "<link rel='stylesheet' type='text/css' href='" . INTEGRATION_STATIC_PATH . "css/General.css' />\n";
         if (self::GetTheme() == 'handsome') {
-            Handsomes::Pjax($config);
+            (new Handsomes)->Pjax($config);
             echo "<link rel='stylesheet' type='text/css' href='" . INTEGRATION_STATIC_PATH . "css/handsome.css' />\n";
         }
-        ReturnTop::header($config);
+        (new ReturnTop)->header($config);
 
     }
 }

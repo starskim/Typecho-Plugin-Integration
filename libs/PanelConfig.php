@@ -19,7 +19,7 @@ class PanelConfig extends Services
      */
     public static function config($form)
     {
-        $Path = Helper::options()->pluginUrl . '/Integration/assets';
+        $Path = sprintf("%s/Integration/assets", Helper::options()->pluginUrl);
         echo <<<EOF
 <link href="https://cdn.bootcdn.net/ajax/libs/mdui/1.0.0/css/mdui.min.css" rel="stylesheet">
 <link href="$Path/css/admin.min.css" rel="stylesheet">
@@ -90,7 +90,7 @@ EOF;
     private static function Generalfunction($form)
     {
         $list = [
-            "MoeTitle." => _t("标题卖萌"),
+            "MoeTitle." => _t('标题卖萌'),
             "TextBan." => _t('文字禁止选中'),
             "PicturesBan." => _t('图片禁止拖动'),
             "PicturesLight." => _t('图片呼吸灯'),
@@ -105,6 +105,9 @@ EOF;
             "BanDeBug." => _t("禁止调试"),
         ];
         $options = [
+            "MoeTitle.",
+            "Copy.",
+            "MySSL.",
         ];
         $General = new Checkbox_Integration('General', $list, $options, _t('通用功能'));
         $form->addInput($General);
@@ -119,27 +122,32 @@ EOF;
             "AvatarRotation." => _t("头像转动"),
             "AvatarCrazyRotation." => _t("头像疯狂转动"),
             "AvatarBreathingLight." => _t("头像呼吸灯"),
+            "ArticleCard." => _t("文章选择卡"),
+            "ArticleShadowing." => _t("文章阴影化"),
+            "TopLamp." => _t("顶部跑马灯"),
+            "RewardStyle." => _t("打赏图片"),
+            "RewardBeating." => _t("打赏跳动"),
+            "ScrollStyle." => _t("滚动条美化"),
+            "TitleStyle." => _t("文章标题美化"),
             "HS_Copy." => _t('复制提醒'),
             "HS_InboundWelcome." => _t('入站欢迎'),
             "HS_InboundWelcome2." => _t('入站欢迎（定位）'),
+            "BlogJob1." => _t('博主介绍闪烁1'),
+            "BlogJob2." => _t('博主介绍闪烁2'),
+            "Pixiv." => _t('P站每日热门'),
             "TotalVisit." => _t('访问总数'),
             "ResponseTime." => _t('响应耗时'),
             "CommentPunch." => _t('评论打卡'),
-            "colorfulIcon." => _t("彩色图标"),
-            "colorfulTags." => _t("彩色标签云及数字"),
-//            "" => _t(''),
+            "ColorfulIcon." => _t("彩色图标"),
+            "ColorfulTags." => _t("彩色标签云及数字"),
         ];
         $options = [
         ];
         $handsome = new Checkbox_Integration('handsome', $list, $options, 'Handsome功能', 'handsome主题专属功能，只适用handsome主题');
         // 右下角版权样式
         $copyrightType = new Radio_Integration('copyrightType', ['0' => _t('美化样式'), '1' => _t('文本样式'),], '0', _t('右下角版权样式'));
-        // 是否启用了pjax
-        $pjax = new Radio_Integration('pjax', array(true => _t('是'), false => _t('否'),), true, _t('是否启用了PJAX'), _t('如果你启用了pjax，函数将会每次在pjax回调内执行。如果没启用，函数将在页面加载完时执行一次。<b style="color:#f23232">如果你不懂此选项的含义，请跟着handsome主题是否设置了pjax来设置此选项。</b>'));
         $form->addInput($handsome);
         $form->addInput($copyrightType);
-        $form->addInput($pjax);
-
     }
 
     /**

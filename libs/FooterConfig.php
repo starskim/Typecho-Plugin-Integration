@@ -10,8 +10,8 @@ class footerConfig extends Services
      * 页脚输出相关代码
      *
      * @access public
-     * @param unknown footer
-     * @return unknown
+     * @return void
+     * @throws Typecho_Plugin_Exception
      */
     public function footer()
     {
@@ -19,13 +19,13 @@ class footerConfig extends Services
         $config = $options->plugin('Integration');
         echo "<script src='https://cdn.bootcdn.net/ajax/libs/layer/3.1.1/layer.min.js'></script>\n";
         echo "<script type='text/javascript' src='https://pv.sohu.com/cityjson?ie=utf-8'></script>\n";
-        echo "<script type='text/javascript' src='" . INTEGRATION_STATIC_PATH . "js/Integration.js'></script>\n";
-        echo "<script type='text/javascript' src='" . INTEGRATION_STATIC_PATH . "js/General.js'></script>\n";
+        echo sprintf("<script type='text/javascript' src='%sjs/Integration.js'></script>\n", INTEGRATION_STATIC_PATH);
+        echo sprintf("<script type='text/javascript' src='%sjs/General.js'></script>\n", INTEGRATION_STATIC_PATH);
         if (self::GetTheme() == 'handsome') {
             echo "<script type='text/javascript' src='" . INTEGRATION_STATIC_PATH . "js/handsome.js'></script>\n";
         }
-        ReturnTop::footer($config);
-        ActivatePowerMode::footer($config);
-        HoerMouse::footer($config);
+        (new ReturnTop)->footer($config);
+        (new ActivatePowerMode)->footer($config);
+        (new HoerMouse)->footer($config);
     }
 }

@@ -25,7 +25,7 @@ class ReturnTop extends Services
 	        </div>
 	        <div class='sidebar_wo' id='lamu'>\n
 	        <img src='" . INTEGRATION_STATIC_PATH . "images/lamuA.png' alt='雷姆' onmouseover='this.src=" . INTEGRATION_STATIC_PATH . "images/lamuB.png' onmouseout='this.src=" . INTEGRATION_STATIC_PATH . "images/lamuA.png' id='audioBtn'>\n
-	        </div>";
+	        </div>\n";
         } elseif ($type == 2) {
             echo "<div class='back-to-top cd-top faa-float animated cd-is-visible' style='top: -900px;'></div>\n";
         }

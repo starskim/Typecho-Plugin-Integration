@@ -6,7 +6,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
  *
  * @package Integration
  * @author Satrs_Kim
- * @version 1.9.0
+ * @version 2.0.0
  * @link https://blog.starskim.cn
  */
 

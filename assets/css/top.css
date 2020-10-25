@@ -44,3 +44,15 @@
         display: none
     }
 }
+
+@media (min-width: 1024px) {
+    .topButton {
+        display: none;
+    !important
+    }
+
+    #goToTop {
+        display: none;
+    !important
+    }
+}

@@ -9,7 +9,7 @@ class Services
      * 判断值是否有效存在
      * @access public
      * @param $value
-     * @return 返回bool类型
+     * @return bool
      */
     public static function exist_value($value, $array, $type = null)
     {

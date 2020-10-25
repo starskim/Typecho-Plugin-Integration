@@ -20,16 +20,15 @@ class HoerMouse extends Services
     {
         $bubbleType = $HoerMouse->bubbleType;
         $dir = INTEGRATION_STATIC_PATH;
-        $js = '';
         switch ($bubbleType) {
             case 'text':
-                $js .= "<script type='text/javascript'>handleBubbleType_text()</script>\n";
+                $js = "<script type='text/javascript'>handleBubbleType_text()</script>\n";
                 break;
             case 'heart':
-                $js .= "<script type='text/javascript'>handleBubbleType_heart()</script>\n";
+                $js = "<script type='text/javascript'>handleBubbleType_heart()</script>\n";
                 break;
             case 'fireworks':
-                $js .= "<script type='text/javascript' src='{$dir}js/fireworks.js'></script>\n";
+                $js = "<script type='text/javascript' src='{$dir}js/fireworks.js'></script>\n";
                 break;
             default:
                 break;
