@@ -18,9 +18,9 @@
 **请先禁用插件后再升级**
 
 ## 整合插件
-
+### 部分插件会进行魔改
 * [x] 生成Sitemap.xml 作者：[八云酱](https://www.bayun.org)
-* [x] 蜘蛛来访日志插件 作者：[Yovi Sun](http://www.yovisun.com) 修复：[猫贝](https://www.catbei.com)
+* [x] 蜘蛛来访日志插件 作者：[Yovi Sun](http://www.yovisun.com)
 * [x] 标签自动生成 作者：[DT27](https://dt27.org)
 * [x] 炫彩鼠标 作者：[Hoe](http://www.hoehub.com)
 * [x] BaiduSubmit 作者：[老高](http://blog.phpgao.com/typecho_plugin_baidusubmit.html)
