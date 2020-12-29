@@ -12,27 +12,10 @@ class Integration_Action extends Typecho_Widget implements Widget_Interface_Do
     /** @var  系统配置信息 */
     private $_options;
 
-    public function send_all()
+    public function action()
     {
         $this->init();
-
-        //获取分组
-        $group_volume = $this->_cfg->group;
-
-        $group = isset($_REQUEST['group']) ? ($_REQUEST['group'] + 0) : 1;
-
-        //获取所有链接数组
-        $url_array = $this->gen_all_url();
-
-        $urls = array_slice($url_array, ($group - 1) * $group_volume, $group_volume);
-
-        //设置超时
-        set_time_limit(600);
-
-        $this->post($urls, $group);
-
-        header('Location: ' . $_SERVER['HTTP_REFERER'], false, 302);
-        exit;
+        $this->on($this->request->is('do=delete'))->deleteRobotsPlus();
     }
 
     public function init()
@@ -42,13 +25,42 @@ class Integration_Action extends Typecho_Widget implements Widget_Interface_Do
         $this->_cfg = $this->_options->plugin('Integration');
     }
 
+    public function deleteRobotsPlus()
+    {
+        $lids = $this->request->filter('int')->getArray('lid');
+        $deleteCount = 0;
+        foreach ($lids as $lid) {
+            if ($this->_db->query($this->_db->delete('table.robots_logs')->where('lid = ?', $lid))) {
+                $deleteCount++;
+            }
+        }
+        /** 提示信息 */
+        $this->widget('Widget_Notice')->set($deleteCount > 0 ? _t('成功删除蜘蛛日志') : _t('当前没有选择的日志'), NULL,
+            $deleteCount > 0 ? 'success' : 'notice');
+        /** 返回原网页 */
+        $this->response->goBack();
+    }
+
+    public function send_all()
+    {
+        $this->init();
+        $group = $this->request->get('group');
+        //获取分组
+        $group_volume = $this->_cfg->group;
+        $groups = isset($group) ? ($group + 0) : 1;
+        //获取所有链接数组
+        $url_array = $this->gen_all_url();
+        $urls = array_slice($url_array, ($groups - 1) * $group_volume, $group_volume);
+        //设置超时
+        set_time_limit(600);
+        $this->post($urls, $group);
+        $this->response->goBack();
+    }
+
     public function gen_all_url()
     {
-
         $urls = array();
-
         $this->init();
-
         $pages = $this->_db->fetchAll($this->_db->select()->from('table.contents')
             ->where('table.contents.status = ?', 'publish')
             ->where('table.contents.created < ?', $this->_options->gmtTime)
@@ -60,7 +72,6 @@ class Integration_Action extends Typecho_Widget implements Widget_Interface_Do
             ->where('table.contents.created < ?', $this->_options->gmtTime)
             ->where('table.contents.type = ?', 'post')
             ->order('table.contents.created', Typecho_Db::SORT_DESC));
-
         foreach ($pages as $page) {
             $type = $page['type'];
             $routeExists = (NULL != Typecho_Router::get($type));
@@ -86,7 +97,6 @@ class Integration_Action extends Typecho_Widget implements Widget_Interface_Do
             $article['pathinfo'] = $routeExists ? Typecho_Router::url($type, $article) : '#';
             $urls[] = Typecho_Common::url($article['pathinfo'], $this->_options->index);
         }
-
         return $urls;
     }
 
@@ -98,34 +108,26 @@ class Integration_Action extends Typecho_Widget implements Widget_Interface_Do
     public function post($url, $group = null)
     {
         $options = Helper::options();
-
+        $config = $options->plugin('Integration');
         //获取API
-        $api = $options->plugin('Integration')->api;
-
+        $api = $config->api;
         //准备数据
         if (is_array($url)) {
             $urls = $url;
         } else {
             $urls = array($url);
         }
-
         //日志信息
-
         $log['subject'] = '我';
         $log['action'] = '发送';
         $log['object'] = 'URL';
-
-
         if ($group) $log['more']['group'] = $group;
-
         $log['more']['url'] = $urls;
-
         try {
             //为了保证成功调用，老高先做了判断
             if (false == Typecho_Http_Client::get()) {
                 throw new Typecho_Plugin_Exception(_t('对不起, 您的主机不支持 php-curl 扩展而且没有打开 allow_url_fopen 功能, 无法正常使用此功能'));
             }
-
             //发送请求
             $http = Typecho_Http_Client::get();
             $http->setData(implode("\n", $urls));
@@ -138,12 +140,10 @@ class Integration_Action extends Typecho_Widget implements Widget_Interface_Do
             } else {
                 $log['result'] = '成功';
             }
-
         } catch (Typecho_Exception $e) {
             $log['more']['info'] = $e->getMessage();
             $log['result'] = '失败';
         }
-
         self::logger($log);
     }
 
@@ -169,52 +169,57 @@ class Integration_Action extends Typecho_Widget implements Widget_Interface_Do
      */
     public function send($contents, $class)
     {
-
         //如果文章属性为隐藏或滞后发布
         if ('publish' != $contents['visibility'] || $contents['created'] > time()) {
             return;
         }
-
         //获取系统配置
         $options = Helper::options();
-
-        //判断是否配置好API
-        if (is_null($options->plugin('Integration')->api)) {
-            throw new Typecho_Plugin_Exception(_t('api未配置'));
+        $config = $options->plugin('Integration');
+        if (self::exist_value('BaiduSubmit', $config->Console)) {
+            //判断是否配置好API
+            if (is_null($config->api)) {
+                throw new Typecho_Plugin_Exception(_t('api未配置'));
+            }
+            //获取文章类型
+            $type = $contents['type'];
+            //获取路由信息
+            $routeExists = (NULL != Typecho_Router::get($type));
+            if (!is_null($routeExists)) {
+                $db = Typecho_Db::get();
+                $contents['cid'] = $class->cid;
+                $contents['categories'] = $db->fetchAll($db->select()->from('table.metas')
+                    ->join('table.relationships', 'table.relationships.mid = table.metas.mid')
+                    ->where('table.relationships.cid = ?', $contents['cid'])
+                    ->where('table.metas.type = ?', 'category')
+                    ->order('table.metas.order', Typecho_Db::SORT_ASC));
+                $contents['category'] = urlencode(current(Typecho_Common::arrayFlatten($contents['categories'], 'slug')));
+                $contents['slug'] = urlencode($contents['slug']);
+                $contents['date'] = new Typecho_Date($contents['created']);
+                $contents['year'] = $contents['date']->year;
+                $contents['month'] = $contents['date']->month;
+                $contents['day'] = $contents['date']->day;
+            }
+            //生成永久连接
+            $path_info = $routeExists ? Typecho_Router::url($type, $contents) : '#';
+            $permalink = Typecho_Common::url($path_info, $options->index);
+            //调用post方法
+            self::post($permalink);
         }
-
-        //获取文章类型
-        $type = $contents['type'];
-
-        //获取路由信息
-        $routeExists = (NULL != Typecho_Router::get($type));
-
-        if (!is_null($routeExists)) {
-            $db = Typecho_Db::get();
-            $contents['cid'] = $class->cid;
-            $contents['categories'] = $db->fetchAll($db->select()->from('table.metas')
-                ->join('table.relationships', 'table.relationships.mid = table.metas.mid')
-                ->where('table.relationships.cid = ?', $contents['cid'])
-                ->where('table.metas.type = ?', 'category')
-                ->order('table.metas.order', Typecho_Db::SORT_ASC));
-            $contents['category'] = urlencode(current(Typecho_Common::arrayFlatten($contents['categories'], 'slug')));
-            $contents['slug'] = urlencode($contents['slug']);
-            $contents['date'] = new Typecho_Date($contents['created']);
-            $contents['year'] = $contents['date']->year;
-            $contents['month'] = $contents['date']->month;
-            $contents['day'] = $contents['date']->day;
-        }
-
-        //生成永久连接
-        $path_info = $routeExists ? Typecho_Router::url($type, $contents) : '#';
-        $permalink = Typecho_Common::url($path_info, $options->index);
-
-        //调用post方法
-        self::post($permalink);
     }
 
-    public function action()
+    /**
+     * 判断值是否有效存在
+     * @access public
+     * @param $value
+     * @return 返回bool类型
+     */
+    public function exist_value($value, $array, $type = null)
     {
+        if (isset($array)) {
+            return in_array($value, $array, $type);
+        }
+        return false;
     }
 
     public function sitemap()
@@ -225,13 +230,11 @@ class Integration_Action extends Typecho_Widget implements Widget_Interface_Do
             ->where('table.contents.created < ?', $this->_options->gmtTime)
             ->where('table.contents.type = ?', 'page')
             ->order('table.contents.created', Typecho_Db::SORT_DESC));
-
         $articles = $this->_db->fetchAll($this->_db->select()->from('table.contents')
             ->where('table.contents.status = ?', 'publish')
             ->where('table.contents.created < ?', $this->_options->gmtTime)
             ->where('table.contents.type = ?', 'post')
             ->order('table.contents.created', Typecho_Db::SORT_DESC));
-
         header("Content-Type: application/xml");
         echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
         echo "<?xml-stylesheet type='text/xsl' href='" . $this->_options->pluginUrl . "/Integration/sitemap.xsl'?>\n";
@@ -241,7 +244,6 @@ class Integration_Action extends Typecho_Widget implements Widget_Interface_Do
             $routeExists = (NULL != Typecho_Router::get($type));
             $page['pathinfo'] = $routeExists ? Typecho_Router::url($type, $page) : '#';
             $page['permalink'] = Typecho_Common::url($page['pathinfo'], $this->_options->index);
-
             echo "\t<url>\n";
             echo "\t\t<loc>" . $page['permalink'] . "</loc>\n";
             echo "\t\t<lastmod>" . date('Y-m-d', $page['modified']) . "</lastmod>\n";
@@ -265,7 +267,6 @@ class Integration_Action extends Typecho_Widget implements Widget_Interface_Do
             $routeExists = (NULL != Typecho_Router::get($type));
             $article['pathinfo'] = $routeExists ? Typecho_Router::url($type, $article) : '#';
             $article['permalink'] = Typecho_Common::url($article['pathinfo'], $this->_options->index);
-
             echo "\t<url>\n";
             echo "\t\t<loc>" . $article['permalink'] . "</loc>\n";
             echo "\t\t<lastmod>" . date('Y-m-d', $article['modified']) . "</lastmod>\n";

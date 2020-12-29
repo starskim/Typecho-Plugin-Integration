@@ -1,0 +1,38 @@
+{
+  "name": "Integration",
+  "version": "2.0.0",
+  "description": "Stars Kim`Blog 整合功能插件",
+  "scripts": {
+    "build": "webpack -p",
+    "dev": "webpack"
+  },
+  "author": "Stars_Kim",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.12.3",
+    "@babel/preset-env": "^7.12.1",
+    "animejs": "^3.2.1",
+    "autoprefixer": "^10.0.1",
+    "axios": "^0.20.0",
+    "babel-loader": "^8.1.0",
+    "css-loader": "^5.0.0",
+    "cssnano": "^4.1.10",
+    "element-ui": "^2.13.2",
+    "file-loader": "^6.1.1",
+    "git-revision-webpack-plugin": "^3.0.6",
+    "jquery": "^3.5.1",
+    "jquery-pjax": "^2.0.1",
+    "mini-css-extract-plugin": "^1.1.0",
+    "node-sass": "^4.14.1",
+    "postcss": "^8.1.2",
+    "postcss-loader": "^4.0.4",
+    "sass-loader": "^10.0.3",
+    "style-loader": "^2.0.0",
+    "sweetalert2": "^10.6.1",
+    "typed.js": "^2.0.11",
+    "vue": "^2.6.12",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12",
+    "webpackbar": "^4.0.0"
+  }
+}

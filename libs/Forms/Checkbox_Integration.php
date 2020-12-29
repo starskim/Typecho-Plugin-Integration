@@ -19,7 +19,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
  * @copyright Copyright (c) 2008 Typecho team (http://www.typecho.org)
  * @license GNU General Public License 2.0
  */
-class Checkbox_integration extends Typecho_Widget_Helper_Form_Element
+class Checkbox_Integration extends Typecho_Widget_Helper_Form_Element
 {
 
     /**
