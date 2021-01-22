@@ -96,7 +96,7 @@
         if (element.nodeName === 'INPUT')
             div.textContent = div.textContent.replace(/\s/g, "\u00a0");
 
-        var span = document.createElement('span');
+        const span = document.createElement('span');
         // Wrapping must be replicated *exactly*, including when a long word gets
         // onto the next line, with whitespace at the end of the line before (#7).
         // The  *only* reliable way to do that is to copy the *entire* rest of the
@@ -105,7 +105,7 @@
         span.textContent = element.value.substring(position) || '.';  // || because a completely empty faux span doesn't render at all
         div.appendChild(span);
 
-        var coordinates = {
+        const coordinates = {
             top: span.offsetTop + parseInt(computed['borderTopWidth']),
             left: span.offsetLeft + parseInt(computed['borderLeftWidth'])
         };
