@@ -12,23 +12,22 @@
 	else if(typeof define === 'function' && define.amd)
 		define([], factory);
 	else if(typeof exports === 'object')
-		exports["Integration"] = factory();
+		exports["b1"] = factory();
 	else
-		root["Integration"] = factory();
+		root["b1"] = factory();
 })(self, function() {
 return /******/ (() => { // webpackBootstrap
-/******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./src/js/Integration.js":
-/*!*******************************!*\
-  !*** ./src/js/Integration.js ***!
-  \*******************************/
+/***/ "./src/js/bg/b1.js":
+/*!*************************!*\
+  !*** ./src/js/bg/b1.js ***!
+  \*************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements:  */
 /***/ (() => {
 
-eval(" // import $ from \"jquery\"\n// import 'jquery-pjax'\n\nvar General = Integration_LocalConst.INIT.General;\nvar handsome = Integration_LocalConst.INIT.handsome; //随机颜色\n\nwindow.randomColor = function () {\n  return \"hsl(\".concat(Math.floor(Math.random() * 360), \",100%,50%,0.6)\");\n}; //判断上午或者下午\n\n\nwindow.getTimeState = function () {\n  var text = \"\";\n  var hours = new Date().getHours();\n\n  if (hours >= 0 && hours <= 10) {\n    text = \"早上好，永远年轻，永远热泪盈眶！\";\n  } else if (hours > 10 && hours <= 14) {\n    text = \"中午好，睡会儿午觉吧！\";\n  } else if (hours > 14 && hours <= 18) {\n    text = \"下午好，是时候打个盹了！\";\n  } else if (hours > 18 && hours <= 24) {\n    text = \"晚上好，注意早点休息！\";\n  }\n\n  return text;\n};\n\n$(function () {\n  new Function(General)();\n  ReturnTop();\n  ActivatePowerModes();\n  HoerMouse();\n\n  if (Integration_LocalConst.GET_THEME) {\n    setCopyright(Integration_LocalConst.COPYRIGHT_TYPE);\n    new Function(handsome)();\n  }\n}); // 你能留下我的信息, 我会很高兴的 ^_^\n\nconsole.log(\"\\n %c Integration v\".concat(\"2.0.0\", \" \").concat(\"9e3951d\", \" %c by Stars_Kim | blog.starskim.cn \\n\"), \"color: #fadfa3; background: #030307; padding:5px 0;\", \"background: #fadfa3; padding:5px 0;\");\nconsole.log(\"\\n %c \\u70AB\\u5F69\\u9F20\\u6807\\u63D2\\u4EF6 https://gitee.com/HoeXhe/HoerMouse %c www.hoehub.com \\uD83D\\uDE0A HoerMouse By Hoe\\n\", \"font-family:'Microsoft YaHei','SF Pro Display',Roboto,Noto,Arial,'PingFang SC',sans-serif;color:white;background:#ffa099;padding:5px 0;\", \"font-family:'Microsoft YaHei','SF Pro Display',Roboto,Noto,Arial,'PingFang SC',sans-serif;color:#ffa099;background:#404040;padding:5px 0;\");\n\n//# sourceURL=webpack://%5Bname%5D/./src/js/Integration.js?");
+eval("document.writeln(\"<canvas id=\\'bg_canvas\\' style=\\'top: 0;left: 0;position: fixed;width: 100%;height: 100%;z-index: -1;background: linear-gradient(to top, #c8e8f8, #2595f2);\\'></canvas> \"); // Canvas Init\n\nvar c = document.getElementById('bg_canvas'),\n    ctx = c.getContext('2d'),\n    width = window.innerWidth,\n    height = window.innerHeight,\n    particles = 60,\n    minRadius = 5,\n    maxRadius = 20,\n    speed = 0.01,\n    x = width / particles; // Bubbles\n\nvar Bubbles = [];\n\nfor (var i = 0; i < particles; i++) {\n  Bubbles.push({\n    x: i * x,\n    y: height * Math.random(),\n    r: minRadius + Math.random() * (maxRadius - minRadius),\n    speed: 10 * Math.random()\n  });\n}\n\nfunction bubble() {\n  c.width = width;\n  c.height = height;\n\n  for (i = 0; i < Bubbles.length; i++) {\n    var b = Bubbles[i];\n    console.log(i, b);\n    ctx.beginPath();\n    ctx.arc(b.x, b.y, b.r, 0, 2 * Math.PI);\n    b.alpha = .5 * (b.y / height);\n    b.speed += speed;\n    ctx.strokeStyle = \"rgba(255, 255, 255, .5)\";\n    ctx.stroke();\n    ctx.fillStyle = \"hsla(203, 75%, 69%,\" + b.alpha + \")\";\n    ctx.fill();\n    b.y -= b.speed;\n\n    if (b.y < 0) {\n      b.y = height;\n      b.speed = Math.random() * 5;\n    }\n  }\n} // Draw\n\n\nfunction draw() {\n  bubble();\n  window.requestAnimationFrame(draw);\n} // Resize Canvas\n\n\nfunction resizeCanvas() {\n  width = window.innerWidth, height = window.innerHeight;\n  c.width = width;\n  c.height = height;\n  draw();\n}\n\nresizeCanvas();\nwindow.addEventListener('resize', resizeCanvas, false);\n\n//# sourceURL=webpack://%5Bname%5D/./src/js/bg/b1.js?");
 
 /***/ })
 
@@ -61,7 +60,7 @@ eval(" // import $ from \"jquery\"\n// import 'jquery-pjax'\n\nvar General = Int
 /******/ 	// module exports must be returned from runtime so entry inlining is disabled
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__("./src/js/Integration.js");
+/******/ 	return __webpack_require__("./src/js/bg/b1.js");
 /******/ })()
 ;
 });
