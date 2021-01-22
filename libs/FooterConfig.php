@@ -22,10 +22,21 @@ class footerConfig extends Services
         echo sprintf("<script type='text/javascript' src='%sjs/Integration.js'></script>\n", INTEGRATION_STATIC_PATH);
         echo sprintf("<script type='text/javascript' src='%sjs/General.js'></script>\n", INTEGRATION_STATIC_PATH);
         if (self::GetTheme() == 'handsome') {
-            echo "<script type='text/javascript' src='" . INTEGRATION_STATIC_PATH . "js/handsome.js'></script>\n";
+            echo sprintf("<script type='text/javascript' src='%sjs/handsome.js'></script>\n", INTEGRATION_STATIC_PATH);
         }
+        self::DynamicBackground($config);
         (new ReturnTop)->footer($config);
         (new ActivatePowerMode)->footer($config);
         (new HoerMouse)->footer($config);
+    }
+
+    public function DynamicBackground($config)
+    {
+        $type = $config->DynamicBackground;
+        if ($type != 'none') {
+            echo sprintf("<script type='text/javascript' src='%sjs/bg/%s'></script>\n", INTEGRATION_STATIC_PATH, $type);
+
+        }
+
     }
 }

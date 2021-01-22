@@ -8,9 +8,9 @@ class LocalConst extends Services
     {
         $options = Helper::options();
         $array = array();
-        $array["General"] = trim(str_replace(".", "()", implode("\n", $plugin->General)));
+        $array["General"] = trim(str_replace(".", "();", implode("\n", $plugin->General)));
         if (self::GetTheme() == 'handsome') {
-            $array["handsome"] = trim(str_replace(".", "()", implode("\n", $plugin->handsome)));
+            $array["handsome"] = trim(str_replace(".", "();", implode("\n", $plugin->handsome)));
         }
         $colorful = self::exist_value('colorful', $plugin->ActivatePowerMode);
         $shake = self::exist_value('shake', $plugin->ActivatePowerMode);

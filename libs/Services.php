@@ -40,7 +40,7 @@ class Services
         if (strlen(trim($config->LocalResourceSrc)) > 0) {//主题静态资源的绝对地址
             @define('INTEGRATION_STATIC_PATH', $config->LocalResourceSrc);
         } else {
-            @define('INTEGRATION_STATIC_PATH', INTEGRATION_URL . '/Integration/assets/');
+            @define('INTEGRATION_STATIC_PATH', INTEGRATION_URL . '/Integration/assets');
         }
     }
 }
