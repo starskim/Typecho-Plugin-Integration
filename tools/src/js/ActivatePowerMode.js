@@ -101,7 +101,7 @@ function ActivatePowerMode() {
     if (!rendering) {
         requestAnimationFrame(loop);
     }
-};
+}
 ActivatePowerMode.colorful = false;
 
 function loop() {

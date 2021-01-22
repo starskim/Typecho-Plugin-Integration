@@ -5,7 +5,7 @@
 const General = Integration_LocalConst.INIT.General
 const handsome = Integration_LocalConst.INIT.handsome
 //随机颜色
-window.randomColor = () => `hsl(${Math.floor(Math.random() * 360)},100%,50%,0.3)`
+window.randomColor = () => `hsl(${Math.floor(Math.random() * 360)},100%,50%,0.6)`
 //判断上午或者下午
 window.getTimeState = () => {
     let text = ``;
@@ -23,9 +23,9 @@ window.getTimeState = () => {
 }
 $(() => {
     new Function(General)()
-    HoerMouse()
     ReturnTop()
     ActivatePowerModes()
+    HoerMouse()
     if (Integration_LocalConst.GET_THEME) {
         setCopyright(Integration_LocalConst.COPYRIGHT_TYPE)
         new Function(handsome)()

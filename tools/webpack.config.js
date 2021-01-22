@@ -1,7 +1,7 @@
-const path = require('path');
+const path = require('path')
 const webpack = require('webpack')
-const WebpackBar = require('webpackbar');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const WebpackBar = require('webpackbar')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
 const gitRevisionPlugin = new GitRevisionPlugin()
 const devMode = !process.argv.includes('-p')
@@ -91,28 +91,5 @@ module.exports = {
             Integration_Version: `"${require('./package.json').version}"`,
             Git_Hash: JSON.stringify(gitRevisionPlugin.version()),
         }),
-    ],
-    optimization: {
-        splitChunks: {
-            chunks: 'async',
-            minSize: 20000,
-            maxSize: 0,
-            minChunks: 1,
-            maxAsyncRequests: 30,
-            maxInitialRequests: 30,
-            automaticNameDelimiter: '~',
-            enforceSizeThreshold: 50000,
-            cacheGroups: {
-                defaultVendors: {
-                    test: /[\\/]node_modules[\\/]/,
-                    priority: -10
-                },
-                default: {
-                    minChunks: 2,
-                    priority: -20,
-                    reuseExistingChunk: true
-                }
-            }
-        }
-    }
+    ]
 };

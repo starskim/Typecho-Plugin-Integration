@@ -1,0 +1,66 @@
+/*
+ * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
+ * This devtool is not neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else if(typeof exports === 'object')
+		exports["a3"] = factory();
+	else
+		root["a3"] = factory();
+})(self, function() {
+return /******/ (() => { // webpackBootstrap
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "./src/js/bg/a3.js":
+/*!*************************!*\
+  !*** ./src/js/bg/a3.js ***!
+  \*************************/
+/*! unknown exports (runtime-defined) */
+/*! runtime requirements:  */
+/***/ (() => {
+
+eval("!function () {\n  \"use strict\";\n\n  function e(e) {\n    return e && e.__esModule && Object.prototype.hasOwnProperty.call(e, \"default\") ? e[\"default\"] : e;\n  }\n\n  function t(e, t) {\n    return e(t = {\n      exports: {}\n    }, t.exports), t.exports;\n  }\n\n  var n = t(function (e, t) {\n    Object.defineProperty(t, \"__esModule\", {\n      value: !0\n    });\n    var n = 1;\n    t[\"default\"] = function () {\n      return \"\" + n++;\n    }, e.exports = t[\"default\"];\n  });\n  e(n);\n  var o = t(function (e, t) {\n    Object.defineProperty(t, \"__esModule\", {\n      value: !0\n    }), t[\"default\"] = function (e) {\n      var t = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : 30,\n          n = null;\n      return function () {\n        for (var o = this, i = arguments.length, r = Array(i), a = 0; a < i; a++) {\n          r[a] = arguments[a];\n        }\n\n        clearTimeout(n), n = setTimeout(function () {\n          e.apply(o, r);\n        }, t);\n      };\n    }, e.exports = t[\"default\"];\n  });\n  e(o);\n  var i = t(function (e, t) {\n    Object.defineProperty(t, \"__esModule\", {\n      value: !0\n    });\n    t.SizeSensorId = \"size-sensor-id\", t.SensorStyle = \"display:block;position:absolute;top:0;left:0;height:100%;width:100%;overflow:hidden;pointer-events:none;z-index:-1;opacity:0\", t.SensorClassName = \"size-sensor-object\";\n  });\n  e(i);\n  i.SizeSensorId, i.SensorStyle, i.SensorClassName;\n  var r = t(function (e, t) {\n    Object.defineProperty(t, \"__esModule\", {\n      value: !0\n    }), t.createSensor = void 0;\n    var n,\n        r = (n = o) && n.__esModule ? n : {\n      \"default\": n\n    };\n\n    t.createSensor = function (e) {\n      var t = void 0,\n          n = [],\n          o = (0, r[\"default\"])(function () {\n        n.forEach(function (t) {\n          t(e);\n        });\n      }),\n          a = function a() {\n        t && t.parentNode && (t.contentDocument.defaultView.removeEventListener(\"resize\", o), t.parentNode.removeChild(t), t = void 0, n = []);\n      };\n\n      return {\n        element: e,\n        bind: function bind(r) {\n          t || (t = function () {\n            \"static\" === getComputedStyle(e).position && (e.style.position = \"relative\");\n            var t = document.createElement(\"object\");\n            return t.onload = function () {\n              t.contentDocument.defaultView.addEventListener(\"resize\", o), o();\n            }, t.setAttribute(\"style\", i.SensorStyle), t.setAttribute(\"class\", i.SensorClassName), t.type = \"text/html\", e.appendChild(t), t.data = \"about:blank\", t;\n          }()), -1 === n.indexOf(r) && n.push(r);\n        },\n        destroy: a,\n        unbind: function unbind(e) {\n          var o = n.indexOf(e);\n          -1 !== o && n.splice(o, 1), 0 === n.length && t && a();\n        }\n      };\n    };\n  });\n  e(r);\n  r.createSensor;\n  var a = t(function (e, t) {\n    Object.defineProperty(t, \"__esModule\", {\n      value: !0\n    }), t.createSensor = void 0;\n    var n,\n        i = (n = o) && n.__esModule ? n : {\n      \"default\": n\n    };\n\n    t.createSensor = function (e) {\n      var t = void 0,\n          n = [],\n          o = (0, i[\"default\"])(function () {\n        n.forEach(function (t) {\n          t(e);\n        });\n      }),\n          r = function r() {\n        t.disconnect(), n = [], t = void 0;\n      };\n\n      return {\n        element: e,\n        bind: function bind(i) {\n          t || (t = function () {\n            var t = new ResizeObserver(o);\n            return t.observe(e), o(), t;\n          }()), -1 === n.indexOf(i) && n.push(i);\n        },\n        destroy: r,\n        unbind: function unbind(e) {\n          var o = n.indexOf(e);\n          -1 !== o && n.splice(o, 1), 0 === n.length && t && r();\n        }\n      };\n    };\n  });\n  e(a);\n  a.createSensor;\n  var s = t(function (e, t) {\n    Object.defineProperty(t, \"__esModule\", {\n      value: !0\n    }), t.createSensor = void 0;\n    t.createSensor = \"undefined\" != typeof ResizeObserver ? a.createSensor : r.createSensor;\n  });\n  e(s);\n  s.createSensor;\n  var u = t(function (e, t) {\n    Object.defineProperty(t, \"__esModule\", {\n      value: !0\n    }), t.removeSensor = t.getSensor = void 0;\n    var o,\n        r = (o = n) && o.__esModule ? o : {\n      \"default\": o\n    };\n    var a = {};\n    t.getSensor = function (e) {\n      var t = e.getAttribute(i.SizeSensorId);\n      if (t && a[t]) return a[t];\n      var n = (0, r[\"default\"])();\n      e.setAttribute(i.SizeSensorId, n);\n      var o = (0, s.createSensor)(e);\n      return a[n] = o, o;\n    }, t.removeSensor = function (e) {\n      var t = e.element.getAttribute(i.SizeSensorId);\n      e.element.removeAttribute(i.SizeSensorId), e.destroy(), t && a[t] && delete a[t];\n    };\n  });\n  e(u);\n  u.removeSensor, u.getSensor;\n  var c = t(function (e, t) {\n    Object.defineProperty(t, \"__esModule\", {\n      value: !0\n    }), t.clear = t.bind = void 0;\n    t.bind = function (e, t) {\n      var n = (0, u.getSensor)(e);\n      return n.bind(t), function () {\n        n.unbind(t);\n      };\n    }, t.clear = function (e) {\n      var t = (0, u.getSensor)(e);\n      (0, u.removeSensor)(t);\n    };\n  });\n  e(c);\n\n  var l = c.clear,\n      d = c.bind,\n      v = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.msRequestAnimationFrame || window.oRequestAnimationFrame || function (e) {\n    return window.setTimeout(e, 1e3 / 60);\n  },\n      f = window.cancelAnimationFrame || window.webkitCancelAnimationFrame || window.mozCancelAnimationFrame || window.msCancelAnimationFrame || window.oCancelAnimationFrame || window.clearTimeout,\n      m = function m(e) {\n    return new Array(e).fill(0).map(function (e, t) {\n      return t;\n    });\n  },\n      h = Object.assign || function (e) {\n    for (var t = 1; t < arguments.length; t++) {\n      var n = arguments[t];\n\n      for (var o in n) {\n        Object.prototype.hasOwnProperty.call(n, o) && (e[o] = n[o]);\n      }\n    }\n\n    return e;\n  },\n      y = function () {\n    function e(e, t) {\n      for (var n = 0; n < t.length; n++) {\n        var o = t[n];\n        o.enumerable = o.enumerable || !1, o.configurable = !0, \"value\" in o && (o.writable = !0), Object.defineProperty(e, o.key, o);\n      }\n    }\n\n    return function (t, n, o) {\n      return n && e(t.prototype, n), o && e(t, o), t;\n    };\n  }();\n\n  var p, w;\n  new (function () {\n    function e(t, n) {\n      var o = this;\n      !function (e, t) {\n        if (!(e instanceof t)) throw new TypeError(\"Cannot call a class as a function\");\n      }(this, e), this.randomPoints = function () {\n        return m(o.c.count).map(function () {\n          return {\n            x: Math.random() * o.canvas.width,\n            y: Math.random() * o.canvas.height,\n            xa: 2 * Math.random() - 1,\n            ya: 2 * Math.random() - 1,\n            max: 6e3\n          };\n        });\n      }, this.el = t, this.c = h({\n        zIndex: -1,\n        opacity: .5,\n        color: \"0,0,0\",\n        count: 99\n      }, n), this.canvas = this.newCanvas(), this.context = this.canvas.getContext(\"2d\"), this.points = this.randomPoints(), this.current = {\n        x: null,\n        y: null,\n        max: 2e4\n      }, this.all = this.points.concat([this.current]), this.bindEvent(), this.requestFrame(this.drawCanvas);\n    }\n\n    return y(e, [{\n      key: \"bindEvent\",\n      value: function value() {\n        var e = this;\n        d(this.el, function () {\n          e.canvas.width = e.el.clientWidth, e.canvas.height = e.el.clientHeight, e.canvas.id = \"bg_canvas\";\n        }), this.onmousemove = window.onmousemove, window.onmousemove = function (t) {\n          e.current.x = t.clientX - e.el.offsetLeft, e.current.y = t.clientY - e.el.offsetTop, e.onmousemove && e.onmousemove(t);\n        }, this.onmouseout = window.onmouseout, window.onmouseout = function () {\n          e.current.x = null, e.current.y = null, e.onmouseout && e.onmouseout();\n        };\n      }\n    }, {\n      key: \"newCanvas\",\n      value: function value() {\n        \"static\" === getComputedStyle(this.el).position && (this.el.style.position = \"relative\");\n        var e,\n            t = document.createElement(\"canvas\");\n        return t.style.cssText = \"display:block;position:fixed;top:0;left:0;height:100%;width:100%;overflow:hidden;pointer-events:none;z-index:-1;background: rgb(227, 239, 233);\" + (e = this.c).zIndex + \";opacity:\" + e.opacity, t.width = this.el.clientWidth, t.height = this.el.clientHeight, this.el.appendChild(t), t;\n      }\n    }, {\n      key: \"requestFrame\",\n      value: function value(e) {\n        var t = this;\n        this.tid = v(function () {\n          return e.call(t);\n        });\n      }\n    }, {\n      key: \"drawCanvas\",\n      value: function value() {\n        var e = this,\n            t = this.context,\n            n = this.canvas.width,\n            o = this.canvas.height,\n            i = this.current,\n            r = this.points,\n            a = this.all;\n        t.clearRect(0, 0, n, o);\n        var s = void 0,\n            u = void 0,\n            c = void 0,\n            l = void 0,\n            d = void 0,\n            v = void 0;\n        r.forEach(function (r, f) {\n          for (r.x += r.xa, r.y += r.ya, r.xa *= r.x > n || r.x < 0 ? -1 : 1, r.ya *= r.y > o || r.y < 0 ? -1 : 1, t.fillRect(r.x - .5, r.y - .5, 1, 1), u = f + 1; u < a.length; u++) {\n            null !== (s = a[u]).x && null !== s.y && (l = r.x - s.x, d = r.y - s.y, (v = l * l + d * d) < s.max && (s === i && v >= s.max / 2 && (r.x -= .03 * l, r.y -= .03 * d), c = (s.max - v) / s.max, t.beginPath(), t.lineWidth = c / 2, t.strokeStyle = \"rgba(\" + e.c.color + \",\" + (c + .2) + \")\", t.moveTo(r.x, r.y), t.lineTo(s.x, s.y), t.stroke()));\n          }\n        }), this.requestFrame(this.drawCanvas);\n      }\n    }, {\n      key: \"destroy\",\n      value: function value() {\n        l(this.el), window.onmousemove = this.onmousemove, window.onmouseout = this.onmouseout, f(this.tid), this.canvas.parentNode.removeChild(this.canvas);\n      }\n    }]), e;\n  }())(document.body, (p = document.getElementsByTagName(\"script\"), {\n    zIndex: (w = p[p.length - 1]).getAttribute(\"zIndex\"),\n    opacity: w.getAttribute(\"opacity\"),\n    color: w.getAttribute(\"color\"),\n    count: Number(w.getAttribute(\"count\")) || 200\n  }));\n}();\n\n//# sourceURL=webpack://%5Bname%5D/./src/js/bg/a3.js?");
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		if(__webpack_module_cache__[moduleId]) {
+/******/ 			return __webpack_module_cache__[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/************************************************************************/
+/******/ 	// module exports must be returned from runtime so entry inlining is disabled
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__("./src/js/bg/a3.js");
+/******/ })()
+;
+});

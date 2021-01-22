@@ -28,10 +28,13 @@ class HoerMouse extends Services
                 $js = "<script type='text/javascript'>handleBubbleType_heart()</script>\n";
                 break;
             case 'fireworks':
-                $js = "<script type='text/javascript' src='{$dir}js/fireworks.js'></script>\n";
+                $js = "<script type='text/javascript' src='" . $dir . "/js/fireworks.js'></script>\n";
                 break;
             default:
                 break;
+        }
+        if ($bubbleType == 'fireworks') {
+            $js = "<script type='text/javascript' src='" . $dir . "/js/fireworks.js'></script>\n";
         }
         return compact('js');
     }

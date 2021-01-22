@@ -1,3 +1,61 @@
+/*首页文章版式圆角化*/
+.panel {
+  border: none;
+  border-radius: 15px;
+}
+
+.panel-small {
+  border: none;
+  border-radius: 15px;
+}
+
+.item-thumb {
+  border-radius: 15px;
+}
+
+/*右侧标题居中*/
+.m-t-none {
+  text-align: center;
+}
+
+/*博客信息*/
+#blog_info {
+  .pull-right {
+    color: #fff;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 3px 5px;
+    border: 0;
+    border-radius: 3px;
+    display: inline-block;
+    line-height: 18px;
+  }
+}
+
+/*标签云*/
+#tag_cloud-2 {
+  padding: 10px;
+
+  & > div {
+    & > a {
+      color: #fff;
+      text-align: center;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      padding: 3px 5px;
+      border: 0;
+      border-radius: 3px;
+      display: inline-block;
+      line-height: 18px;
+
+      &:hover {
+        background: #d02f53 !important;
+      }
+    }
+  }
+}
+
 /*底部页脚*/
 .github-badge {
   display: inline-block;

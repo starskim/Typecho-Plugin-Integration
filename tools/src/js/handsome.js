@@ -59,6 +59,19 @@ window.TitleCentered = () => {
     `))
     document.getElementsByTagName('head')[0].appendChild(style)
 }
+//头像转动并放大
+window.AvatarRotationZoom = () => {
+    const style = document.createElement(`style`)
+    style.type = "text/css"
+    style.appendChild(document.createTextNode(`
+    .thumb-lg{width:96px;}
+    .avatar{-webkit-transition:0.4s;-webkit-transition:-webkit-transform 0.4s ease-out;transition:transform 0.4s ease-out;-moz-transition:-moz-transform 0.4s ease-out;}
+    .avatar:hover{transform:rotateZ(360deg);-webkit-transform:rotateZ(360deg);-moz-transform:rotateZ(360deg);}
+    #aside-user span.avatar{animation-timing-function:cubic-bezier(0,0,.07,1)!important;}
+    #aside-user span.avatar:hover{transform:rotate(360deg) scale(1.2);border-width:5px;animation:avatar .5s}
+    `))
+    document.getElementsByTagName(`head`)[0].appendChild(style)
+}
 // 头像转动
 window.AvatarRotation = () => {
     const style = document.createElement(`style`)
@@ -315,6 +328,71 @@ window.BlogJob2 = () => {
         backDelay: 2000,
         showCursor: !0
     })
+}
+//心知天气
+window.KnewWeather = () => {
+    $('#searchform1').after(`<!--天气开始-->
+<div id="tp-weather-widget" class="navbar-form navbar-form-sm navbar-left shift"></div>
+<!--天气结束-->
+`)
+    $(((a, h, g, f, e, d, c, b) => {
+        b = () => {
+            d = h.createElement(g);
+            c = h.getElementsByTagName(g)[0];
+            d.src = e;
+            d.charset = "utf-8";
+            d.async = 1;
+            c.parentNode.insertBefore(d, c)
+        };
+        a["SeniverseWeatherWidgetObject"] = f;
+        a[f] || (a[f] = function () {
+            (a[f].q = a[f].q || []).push(arguments)
+        });
+        a[f].l = +new Date();
+        if (a.attachEvent) {
+            a.attachEvent("onload", b)
+        } else {
+            a.addEventListener("load", b, false)
+        }
+    })(window, document, "script", "SeniverseWeatherWidget", "//cdn.sencdn.com/widget2/static/js/bundle.js?t=" + parseInt((new Date().getTime() / 100000000).toString(), 10)));
+    window.SeniverseWeatherWidget('show', {
+        flavor: "slim",
+        location: "WS0E9D8WN298",
+        geolocation: true,
+        language: "auto",
+        unit: "c",
+        theme: "auto",
+        token: "d1fe0a62-a0eb-4954-9fdc-e1ff5a5d8cf0",
+        hover: "enabled",
+        container: "tp-weather-widget"
+    })
+}
+
+//百度收录
+window.BaiduIncluded = () => {
+    $(".entry-meta.text-muted.list-inline.m-b-none.small.post-head-icon").append(`<!--百度收录--><li class="meta-baidu">
+<span class="post-icons">
+        <i class="glyphicon glyphicon-refresh" id="baidu_icon"></i>
+    </span>
+    <span class="meta-value" id="baidu_result">加载中</span>
+</li>
+    
+`)
+    $.getJSON("https://api.starskim.cn/baidu?domain=" + window.location.href, function (result) {
+        if (result.code === 200) {
+            $('#baidu_icon').removeClass('glyphicon-refresh');
+            $('#baidu_icon').addClass('glyphicon-ok-circle');
+            $('#baidu_result').text('百度已收录');
+        } else if (result.code === 403) {
+            $('#baidu_icon').removeClass('glyphicon-refresh');
+            $('#baidu_icon').addClass('glyphicon-info-sign');
+            $('#baidu_result').text('百度未收录');
+        } else {
+            $('#baidu_icon').removeClass('glyphicon-refresh');
+            $('#baidu_icon').addClass('glyphicon-remove-circle');
+            $('#baidu_result').text('查询收录失败');
+        }
+    });
 }
 //P站每日热门
 window.Pixiv = () => {

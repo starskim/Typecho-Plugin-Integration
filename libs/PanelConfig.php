@@ -78,7 +78,8 @@ EOF;
 
     private static function PrettifyStyle($form)
     {
-        $form->addItem(new Title_Integration(_t('主题美化'), _t('功能开发中')));
+        $form->addItem(new Title_Integration(_t('主题美化')));
+        self::DynamicBackground($form);
         self::Generalfunction($form);
         if (self::GetTheme() == 'handsome') {
             self::handsome($form);
@@ -87,21 +88,49 @@ EOF;
 
     }
 
+    public static function DynamicBackground($form)
+    {
+        $list = [
+            'none' => '不使用动态背景',
+            'a1.js' => '黑客帝国001',
+            'a2.js' => '黑客帝国002',
+            'a3.js' => '磁力线条',
+            'a4.js' => '浮动气泡',
+            'a5.js' => '七色彩虹',
+            'a6.js' => '下雨背景',
+            'a7.js' => '彩色气球[推荐]',
+            'a8.js' => '彩色爱心',
+            'a9.js' => '科技背景',
+            'b1.js' => '蓝色气泡',
+            'b2.js' => '漫漫星空[推荐]',
+            'b3.js' => '海平面',
+            'b4.js' => '随机色带',
+            'b5.js' => '气泡背景[推荐]',
+            'b6.js' => '旋转特效',
+            'b7.js' => '磁感线',
+            'b8.js' => '互动星空',
+            'b9.js' => '旋转星空',
+        ];
+        $DynamicBackground = new Select_Integration('DynamicBackground', $list, 'a7.js', _t('动态背景'), _t('动态背景的渲染会占用终端用户的内存，如果您的用户不是十几年前的机型，影响可以忽略不计'));
+        $form->addInput($DynamicBackground);
+
+    }
+
     private static function Generalfunction($form)
     {
         $list = [
-            "MoeTitle." => _t('标题卖萌'),
-            "TextBan." => _t('文字禁止选中'),
-            "PicturesBan." => _t('图片禁止拖动'),
-            "PicturesLight." => _t('图片呼吸灯'),
-            "Copy." => _t('复制提醒'),
-            "Copy2." => _t('复制提醒2'),
-            "Copy3." => _t('复制提醒3'),
-            "PlayRemind." => _t('播放提醒'),
-            "InboundWelcome." => _t('入站欢迎'),
-            "InboundWelcome2." => _t('入站欢迎（定位）'),
+            "MoeTitle." => _t("标题卖萌"),
+            "TextBan." => _t("文字禁止选中"),
+            "PicturesBan." => _t("图片禁止拖动"),
+            "PicturesLight." => _t("图片呼吸灯"),
+            "Copy." => _t("复制提醒"),
+            "Copy2." => _t("复制提醒2"),
+            "Copy3." => _t("复制提醒3"),
+            "PlayRemind." => _t("播放提醒"),
+            "InboundWelcome." => _t("入站欢迎"),
+            "InboundWelcome2." => _t("入站欢迎（定位）"),
             "MySSL." => _t("MySSL安全认证签章"),
-            "BanF12." => _t(" 禁用F12"),
+            "BanF12." => _t("禁用F12"),
             "BanDeBug." => _t("禁止调试"),
         ];
         $options = [
@@ -119,6 +148,7 @@ EOF;
             "TransparentStyle." => _t("透明样式"),
             "BoxModel." => _t("盒子模型"),
             "TitleCentered." => _t("标题居中"),
+            "AvatarRotationZoom." => _t("头像转动并放大"),
             "AvatarRotation." => _t("头像转动"),
             "AvatarCrazyRotation." => _t("头像疯狂转动"),
             "AvatarBreathingLight." => _t("头像呼吸灯"),
@@ -129,19 +159,29 @@ EOF;
             "RewardBeating." => _t("打赏跳动"),
             "ScrollStyle." => _t("滚动条美化"),
             "TitleStyle." => _t("文章标题美化"),
-            "HS_Copy." => _t('复制提醒'),
-            "HS_InboundWelcome." => _t('入站欢迎'),
-            "HS_InboundWelcome2." => _t('入站欢迎（定位）'),
-            "BlogJob1." => _t('博主介绍闪烁1'),
-            "BlogJob2." => _t('博主介绍闪烁2'),
-            "Pixiv." => _t('P站每日热门'),
-            "TotalVisit." => _t('访问总数'),
-            "ResponseTime." => _t('响应耗时'),
-            "CommentPunch." => _t('评论打卡'),
+            "HS_Copy." => _t("复制提醒"),
+            "HS_InboundWelcome." => _t("入站欢迎"),
+            "HS_InboundWelcome2." => _t("入站欢迎（定位）"),
+            "BlogJob1." => _t("博主介绍闪烁1"),
+            "BlogJob2." => _t("博主介绍闪烁2"),
+            "KnewWeather." => _t("心知天气"),
+            "BaiduIncluded." => _t("百度收录"),
+            "Pixiv." => _t("P站每日热门"),
+            "TotalVisit." => _t("访问总数"),
+            "ResponseTime." => _t("响应耗时"),
+            "CommentPunch." => _t("评论打卡"),
             "ColorfulIcon." => _t("彩色图标"),
             "ColorfulTags." => _t("彩色标签云及数字"),
         ];
         $options = [
+            "TitleCentered.",
+            "AvatarRotationZoom.",
+            "TitleStyle.",
+            "BlogJob2.",
+            "Pixiv.",
+            "CommentPunch.",
+            "ColorfulIcon.",
+            "ColorfulTags."
         ];
         $handsome = new Checkbox_Integration('handsome', $list, $options, 'Handsome功能', 'handsome主题专属功能，只适用handsome主题');
         // 右下角版权样式
@@ -373,7 +413,7 @@ EOF;
         $LocalResourceSrc = new Text_Integration('LocalResourceSrc', NULL, NULL, _t(' 云加速CDN'), _t('使用该项设置前，你必须有自己搭建的cdn服务器（不是指当前服务器）</br> 插件目录下的<code>/assets/</code>目录下有 
 <code>css、js、images</code>四个静态资源文件夹。</br>你需要把<code>assets</code>目录上传到你的cdn服务器上，比如CDN服务器的 
 <code>Integration目录</code>里，地址即为 
-<code>https://cdn.starskim.com/Integration/assets/</code></br>在当前框中就填入该地址，插件就会引用你搭建的cdn上面的资源，而不再引用当前服务器上的资源'));
+<code>https://cdn.starskim.com/Integration/assets</code></br>在当前框中就填入该地址，插件就会引用你搭建的cdn上面的资源，而不再引用当前服务器上的资源'));
         $form->addInput($LocalResourceSrc);
     }
 }
